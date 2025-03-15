@@ -1,4 +1,4 @@
-package com.filipmikolajzeglen.cqrs;
+package com.filipmikolajzeglen.cqrs.common;
 
 public abstract class Query<TYPE>
 {

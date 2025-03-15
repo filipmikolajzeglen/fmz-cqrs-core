@@ -1,4 +1,5 @@
-package com.filipmikolajzeglen.cqrs
+package com.filipmikolajzeglen.cqrs.common
+
 
 import spock.lang.Specification
 

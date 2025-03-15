@@ -1,4 +1,4 @@
-package com.filipmikolajzeglen.cqrs;
+package com.filipmikolajzeglen.cqrs.common;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

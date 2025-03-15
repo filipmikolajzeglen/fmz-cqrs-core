@@ -1,5 +1,6 @@
-package com.filipmikolajzeglen.cqrs
+package com.filipmikolajzeglen.cqrs.common
 
+import com.filipmikolajzeglen.cqrs.common.Query
 import spock.lang.Specification
 
 class QuerySpec extends Specification {

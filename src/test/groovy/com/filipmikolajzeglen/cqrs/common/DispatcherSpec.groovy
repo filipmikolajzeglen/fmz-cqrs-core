@@ -1,5 +1,8 @@
-package com.filipmikolajzeglen.cqrs
+package com.filipmikolajzeglen.cqrs.common
 
+import com.filipmikolajzeglen.cqrs.common.Command
+import com.filipmikolajzeglen.cqrs.common.Dispatcher
+import com.filipmikolajzeglen.cqrs.common.Query
 import spock.lang.Specification
 
 class DispatcherSpec extends Specification {
