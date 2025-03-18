@@ -1,47 +1,94 @@
 package com.filipmikolajzeglen.cqrs.common
 
-import com.filipmikolajzeglen.cqrs.common.Command
-import com.filipmikolajzeglen.cqrs.common.Dispatcher
-import com.filipmikolajzeglen.cqrs.common.Query
 import spock.lang.Specification
+import org.springframework.context.ApplicationContext
 
 class DispatcherSpec extends Specification {
 
-   def 'should execute command using dispatcher'() {
+   def "should execute command and return expected result"() {
       given:
-      def dispatcher = new Dispatcher()
-      def command = new SimpleCommand()
+      def handler = new EntityCreateCommandHandler()
+      def context = Mock(ApplicationContext) {
+         getBeansWithAnnotation(Handler) >> ["entityCreateCommandHandler": handler]
+      }
+      def dispatcher = new Dispatcher(context)
+      def command = new EntityCreateCommand(name: "Test Entity")
 
       when:
       def result = dispatcher.execute(command)
 
       then:
-      result == "Dispatched Execution"
+      result != null
+      result.name == "Test Entity"
+      result.flag
    }
 
-   def 'should execute query using dispatcher'() {
+   def "should perform query and return expected result"() {
       given:
-      def dispatcher = new Dispatcher()
-      def query = new SimpleQuery()
+      def handler = new EntityQueryHandler()
+      def context = Mock(ApplicationContext) {
+         getBeansWithAnnotation(Handler) >> ["entityQueryHandler": handler]
+      }
+      def dispatcher = new Dispatcher(context)
+      def query = new EntityQuery(name: "Test Entity 2")
 
       when:
       def result = dispatcher.perform(query)
 
       then:
-      result == true
+      result != null
+      result.name == "Test Entity 2"
+      !result.flag
    }
 
-   private class SimpleCommand extends Command<String> {
-      @Override
-      String execute() {
-         return "Dispatched Execution"
+   def "should throw RuntimeException due to lack of handler for command"() {
+      given:
+      def handler = new EntityCreateCommandHandler()
+      def context = Mock(ApplicationContext) {
+         getBeansWithAnnotation(Handler) >> ["entityCreateHandler": handler]
       }
+      def dispatcher = new Dispatcher(context)
+      def command = new EntityCommandWithoutHandler()
+
+      when:
+      dispatcher.execute(command)
+
+      then:
+      def e = thrown(RuntimeException)
+      e.getMessage() == 'No handler for command class com.filipmikolajzeglen.cqrs.common.EntityCommandWithoutHandler'
    }
 
-   private class SimpleQuery extends Query<Boolean> {
-      @Override
-      Boolean perform() {
-         return true
+   def "should throw RuntimeException due to lack of handler for query"() {
+      given:
+      def handler = new EntityQueryHandler()
+      def context = Mock(ApplicationContext) {
+         getBeansWithAnnotation(Handler) >> ["entityQueryHandler": handler]
       }
+      def dispatcher = new Dispatcher(context)
+      def query = new EntityQueryWithoutHandler()
+
+      when:
+      dispatcher.perform(query)
+
+      then:
+      def e = thrown(RuntimeException)
+      e.getMessage() == 'No handler for query class com.filipmikolajzeglen.cqrs.common.EntityQueryWithoutHandler'
+   }
+
+   def "should throw RuntimeException when handler invocation fails"() {
+      given:
+      def faultyHandler = new FaultyCommandHandler()
+      def context = Mock(ApplicationContext) {
+         getBeansWithAnnotation(Handler) >> ["faultyHandler": faultyHandler]
+      }
+      def dispatcher = new Dispatcher(context)
+      def command = new FaultyCommand()
+
+      when:
+      dispatcher.execute(command)
+
+      then:
+      def e = thrown(RuntimeException)
+      e.message.contains("Handler execution failed")
    }
 }

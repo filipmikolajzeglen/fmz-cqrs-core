@@ -1,5 +1,5 @@
 package com.filipmikolajzeglen.cqrs.common;
 
-public abstract class Query<TYPE>
+class FaultyCommand extends Command<Entity>
 {
 }
