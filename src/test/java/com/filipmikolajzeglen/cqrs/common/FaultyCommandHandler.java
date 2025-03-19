@@ -1,6 +1,5 @@
 package com.filipmikolajzeglen.cqrs.common;
 
-@Handler
 class FaultyCommandHandler implements CommandHandler<FaultyCommand, Entity>
 {
    @Override

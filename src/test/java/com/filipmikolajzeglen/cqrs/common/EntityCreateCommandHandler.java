@@ -1,6 +1,5 @@
 package com.filipmikolajzeglen.cqrs.common;
 
-@Handler
 class EntityCreateCommandHandler implements CommandHandler<EntityCreateCommand, Entity>
 {
    @Override
