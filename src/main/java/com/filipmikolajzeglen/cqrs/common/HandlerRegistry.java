@@ -21,7 +21,21 @@ public class HandlerRegistry<K, T>
 
    public T getHandler(Class<? extends K> key)
    {
-      return handlers.get(key);
+      T handler = handlers.get(key);
+      if (handler != null)
+      {
+         return handler;
+      }
+
+      for (Map.Entry<Class<? extends K>, T> entry : handlers.entrySet())
+      {
+         if (entry.getKey().isAssignableFrom(key))
+         {
+            return entry.getValue();
+         }
+      }
+
+      return null;
    }
 
    @SuppressWarnings("unchecked")

@@ -4,22 +4,27 @@ import spock.lang.Specification
 
 class HandlerRegistrySpec extends Specification {
 
-   def "should register and retrieve handler for exact command type"() {
+   def "should #testName"(String testName, Class command) {
       given:
-      def handler = new MyCommandHandler()
+      def handler = new MyBaseCommandHandler()
       def registry = new HandlerRegistry<Command<?>, CommandHandler<?, ?>>(List.of(handler))
 
       when:
-      def resolved = registry.getHandler(MyCommand.class)
+      def resolved = registry.getHandler(command)
 
       then:
       resolved != null
-      resolved instanceof MyCommandHandler
+      resolved instanceof MyBaseCommandHandler
+
+      where:
+      testName                                                          | command
+      'register and retrieve handler for exact command type'            | MyBaseCommand.class
+      'fallback to handler for supertype when exact match is not found' | MyCommand.class
    }
 
    def "should return null for unregistered command type"() {
       given:
-      def handler = new MyCommandHandler()
+      def handler = new MyBaseCommandHandler()
       def registry = new HandlerRegistry<Command<?>, CommandHandler<?, ?>>(List.of(handler))
 
       when:
