@@ -1,9 +1,9 @@
 package com.filipmikolajzeglen.cqrs.common;
 
-class OtherCommandHandler implements CommandHandler<MyCommand, String>
+class OtherBaseCommandHandler implements CommandHandler<OtherBaseCommand, String>
 {
    @Override
-   public String handle(MyCommand command)
+   public String handle(OtherBaseCommand command)
    {
       return "Handled:" + command.getClass().getSimpleName();
    }

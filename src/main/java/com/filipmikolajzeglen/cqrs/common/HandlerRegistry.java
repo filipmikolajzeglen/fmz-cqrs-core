@@ -6,15 +6,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import lombok.Getter;
+
+@Getter
 public class HandlerRegistry<K, T>
 {
    private final Map<Class<? extends K>, T> handlers = new ConcurrentHashMap<>();
 
-   public HandlerRegistry(List<T> handlerList)
+   public HandlerRegistry(List<T> handlerList, Class<?> baseClass)
    {
       for (T handler : handlerList)
       {
-         Class<? extends K> key = extractHandledType(handler);
+         Class<? extends K> key = extractHandledType(handler, baseClass);
          handlers.put(key, handler);
       }
    }
@@ -31,6 +34,7 @@ public class HandlerRegistry<K, T>
       {
          if (entry.getKey().isAssignableFrom(key))
          {
+            handlers.put(key, entry.getValue());
             return entry.getValue();
          }
       }
@@ -39,16 +43,16 @@ public class HandlerRegistry<K, T>
    }
 
    @SuppressWarnings("unchecked")
-   private Class<? extends K> extractHandledType(T handler)
+   private Class<? extends K> extractHandledType(T handler, Class<?> baseClass)
    {
       for (Type type : handler.getClass().getGenericInterfaces())
       {
          if (type instanceof ParameterizedType parameterized)
          {
             Type actualType = parameterized.getActualTypeArguments()[0];
-            if (actualType instanceof Class<?> actualClass)
+            if (baseClass.isAssignableFrom((Class<?>) actualType))
             {
-               return (Class<? extends K>) actualClass;
+               return (Class<? extends K>) actualType;
             }
          }
       }

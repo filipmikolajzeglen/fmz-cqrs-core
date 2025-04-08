@@ -1,5 +1,5 @@
 package com.filipmikolajzeglen.cqrs.common;
 
-class OtherCommand extends OtherBaseCommand
+class OtherBaseCommand extends Command<String>
 {
 }
