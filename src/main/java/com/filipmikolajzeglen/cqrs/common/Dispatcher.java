@@ -35,7 +35,7 @@ public class Dispatcher
       }
    }
 
-   public <COMMAND extends Command<TYPE>, TYPE> TYPE execute(COMMAND command)
+   public <COMMAND extends Command<? extends TYPE>, TYPE> TYPE execute(COMMAND command)
    {
       CommandHandler<COMMAND, TYPE> handler = (CommandHandler<COMMAND, TYPE>) commandHandlers.get(command.getClass());
       if (handler == null)
@@ -45,7 +45,7 @@ public class Dispatcher
       return handler.handle(command);
    }
 
-   public <QUERY extends Query<TYPE>, TYPE> TYPE perform(QUERY query)
+   public <QUERY extends Query<? extends TYPE>, TYPE> TYPE perform(QUERY query)
    {
       QueryHandler<QUERY, TYPE> handler = (QueryHandler<QUERY, TYPE>) queryHandlers.get(query.getClass());
       if (handler == null)
