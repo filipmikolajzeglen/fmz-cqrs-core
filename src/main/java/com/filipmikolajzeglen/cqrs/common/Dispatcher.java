@@ -21,9 +21,7 @@ public class Dispatcher
 
    public <COMMAND extends Command<? extends TYPE>, TYPE> TYPE execute(COMMAND command)
    {
-      CommandHandler<COMMAND, TYPE> handler = (CommandHandler<COMMAND, TYPE>) commandHandlers.getHandler(
-            (Class<? extends Command<?>>) command.getClass());
-
+      CommandHandler<COMMAND, TYPE> handler = (CommandHandler<COMMAND, TYPE>) commandHandlers.get(command);
       if (handler == null)
       {
          throw new RuntimeException("No handler for command " + command.getClass());
@@ -33,9 +31,7 @@ public class Dispatcher
 
    public <QUERY extends Query<? extends TYPE>, TYPE> TYPE perform(QUERY query)
    {
-      QueryHandler<QUERY, TYPE> handler = (QueryHandler<QUERY, TYPE>) queryHandlers.getHandler(
-            (Class<? extends Query<?>>) query.getClass());
-
+      QueryHandler<QUERY, TYPE> handler = (QueryHandler<QUERY, TYPE>) queryHandlers.get(query);
       if (handler == null)
       {
          throw new RuntimeException("No handler for query " + query.getClass());

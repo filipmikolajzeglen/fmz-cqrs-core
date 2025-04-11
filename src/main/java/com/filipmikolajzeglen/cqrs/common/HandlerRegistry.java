@@ -22,8 +22,10 @@ public class HandlerRegistry<K, T>
       }
    }
 
-   public T getHandler(Class<? extends K> key)
+   @SuppressWarnings("unchecked")
+   public T get(K instance)
    {
+      Class<? extends K> key = (Class<? extends K>) instance.getClass();
       T handler = handlers.get(key);
       if (handler != null)
       {
