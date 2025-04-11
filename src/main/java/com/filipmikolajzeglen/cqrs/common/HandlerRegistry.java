@@ -9,30 +9,30 @@ import java.util.concurrent.ConcurrentHashMap;
 import lombok.Getter;
 
 @Getter
-public class HandlerRegistry<K, T>
+class HandlerRegistry<KEY, TYPE>
 {
-   private final Map<Class<? extends K>, T> handlers = new ConcurrentHashMap<>();
+   private final Map<Class<? extends KEY>, TYPE> handlers = new ConcurrentHashMap<>();
 
-   public HandlerRegistry(List<T> handlerList, Class<?> baseClass)
+   public HandlerRegistry(List<TYPE> handlerList, Class<?> baseClass)
    {
-      for (T handler : handlerList)
+      for (TYPE handler : handlerList)
       {
-         Class<? extends K> key = extractHandledType(handler, baseClass);
+         Class<? extends KEY> key = extractHandledType(handler, baseClass);
          handlers.put(key, handler);
       }
    }
 
    @SuppressWarnings("unchecked")
-   public T get(K instance)
+   public TYPE get(KEY instance)
    {
-      Class<? extends K> key = (Class<? extends K>) instance.getClass();
-      T handler = handlers.get(key);
+      Class<? extends KEY> key = (Class<? extends KEY>) instance.getClass();
+      TYPE handler = handlers.get(key);
       if (handler != null)
       {
          return handler;
       }
 
-      for (Map.Entry<Class<? extends K>, T> entry : handlers.entrySet())
+      for (Map.Entry<Class<? extends KEY>, TYPE> entry : handlers.entrySet())
       {
          if (entry.getKey().isAssignableFrom(key))
          {
@@ -45,7 +45,7 @@ public class HandlerRegistry<K, T>
    }
 
    @SuppressWarnings("unchecked")
-   private Class<? extends K> extractHandledType(T handler, Class<?> baseClass)
+   private Class<? extends KEY> extractHandledType(TYPE handler, Class<?> baseClass)
    {
       for (Type type : handler.getClass().getGenericInterfaces())
       {
@@ -54,7 +54,7 @@ public class HandlerRegistry<K, T>
             Type actualType = parameterized.getActualTypeArguments()[0];
             if (baseClass.isAssignableFrom((Class<?>) actualType))
             {
-               return (Class<? extends K>) actualType;
+               return (Class<? extends KEY>) actualType;
             }
          }
       }
