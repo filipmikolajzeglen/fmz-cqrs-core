@@ -6,11 +6,11 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import spock.lang.Specification
 
-class CQRSConfigSpec extends Specification {
+class DispatcherConfigurationSpec extends Specification {
 
    def "should create dispatcher bean"() {
       given: "A Spring application context with CQRSConfig and test handlers"
-      ApplicationContext context = new AnnotationConfigApplicationContext(TestConfig, CQRSConfig)
+      ApplicationContext context = new AnnotationConfigApplicationContext(TestConfig, DispatcherConfiguration)
 
       when: "The dispatcher bean is retrieved from the context"
       def dispatcher = context.getBean(Dispatcher)

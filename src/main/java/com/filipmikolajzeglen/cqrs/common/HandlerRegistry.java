@@ -6,9 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 
-@Getter
+@Getter(AccessLevel.PACKAGE)
 class HandlerRegistry<KEY, TYPE>
 {
    private final Map<Class<? extends KEY>, TYPE> handlers = new ConcurrentHashMap<>();
