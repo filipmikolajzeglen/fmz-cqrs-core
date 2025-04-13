@@ -11,7 +11,7 @@ class QueryHandlerSpec extends Specification {
       def handler = new EntityQueryHandler()
 
       when:
-      def result = handler.handle(query)
+      def result = handler.handle(query, Pagination.single())
 
       then:
       result != null
@@ -30,7 +30,7 @@ class QueryHandlerSpec extends Specification {
       def handler = new EntityQueryHandler()
 
       when:
-      handler.handle(query)
+      handler.handle(query, Pagination.single())
 
       then:
       thrown(NoSuchElementException)

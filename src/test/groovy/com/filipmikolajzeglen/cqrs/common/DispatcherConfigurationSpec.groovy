@@ -35,8 +35,8 @@ class DispatcherConfigurationSpec extends Specification {
       QueryHandler<TestQuery, String> testQueryHandler() {
          return new QueryHandler<TestQuery, String>() {
             @Override
-            String handle(TestQuery query) {
-               return "Result for: " + query.input
+            <PAGE> PAGE handle(TestQuery query, Pagination<String, PAGE> pagination) {
+               return pagination.expandSingle("Result for: " + query.input)
             }
          }
       }

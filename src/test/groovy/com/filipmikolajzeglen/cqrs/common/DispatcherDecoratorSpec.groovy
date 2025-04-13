@@ -32,7 +32,7 @@ class DispatcherDecoratorSpec extends Specification {
       def query = new EntityQuery(name: "Test Entity 1")
 
       when:
-      dispatcher.perform(query)
+      dispatcher.perform(query, Pagination.single())
 
       then:
       logCaptor.infoLogs.any {
@@ -62,12 +62,13 @@ class DispatcherDecoratorSpec extends Specification {
       def interceptor = new TransactionalQueryInterceptor()
       def query = Stub(Query)
       def invocation = Mock(QueryInvocation)
+      def pagination = Pagination.single()
 
       when:
-      def result = interceptor.intercept(query, invocation)
+      def result = interceptor.intercept(query, pagination, invocation)
 
       then:
-      1 * invocation.invoke() >> "OK"
+      1 * invocation.invoke(pagination) >> "OK"
       result == "OK"
    }
 

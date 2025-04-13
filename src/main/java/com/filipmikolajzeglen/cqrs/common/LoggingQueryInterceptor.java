@@ -6,11 +6,13 @@ import org.apache.logging.log4j.Logger;
 public class LoggingQueryInterceptor implements QueryInterceptor
 {
    private static final Logger LOGGER = LogManager.getLogger(LoggingQueryInterceptor.class);
+
    @Override
-   public <TYPE> TYPE intercept(Query<TYPE> query, QueryInvocation<TYPE> next)
+   public <TYPE, PAGE> PAGE intercept(Query<TYPE> query, Pagination<TYPE, PAGE> pagination,
+         QueryInvocation<TYPE, PAGE> next)
    {
       LOGGER.info("Performing query '{}'", query.getClass());
-      TYPE result = next.invoke();
+      PAGE result = next.invoke(pagination);
       LOGGER.info("Query result '{}'", result.getClass());
       return result;
    }

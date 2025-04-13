@@ -6,8 +6,8 @@ public class TransactionalQueryInterceptor implements QueryInterceptor
 {
    @Override
    @Transactional(readOnly = true)
-   public <TYPE> TYPE intercept(Query<TYPE> query, QueryInvocation<TYPE> next)
+   public <TYPE, PAGE> PAGE intercept(Query<TYPE> query, Pagination<TYPE, PAGE> pagination, QueryInvocation<TYPE, PAGE> next)
    {
-      return next.invoke();
+      return next.invoke(pagination);
    }
 }

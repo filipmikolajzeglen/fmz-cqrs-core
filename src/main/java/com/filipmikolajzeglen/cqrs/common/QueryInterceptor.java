@@ -2,5 +2,5 @@ package com.filipmikolajzeglen.cqrs.common;
 
 public interface QueryInterceptor
 {
-   <TYPE> TYPE intercept(Query<TYPE> query, QueryInvocation<TYPE> next);
+   <TYPE, PAGE> PAGE intercept(Query<TYPE> query, Pagination<TYPE, PAGE> pagination, QueryInvocation<TYPE, PAGE> next);
 }

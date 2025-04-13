@@ -37,18 +37,19 @@ public class DispatcherDecorator extends Dispatcher
 
    @SuppressWarnings("unchecked")
    @Override
-   public <QUERY extends Query<? extends TYPE>, TYPE> TYPE perform(QUERY query)
+   public <QUERY extends Query<? extends TYPE>, TYPE, PAGE> PAGE perform(QUERY query, Pagination<TYPE, PAGE> pagination)
    {
-      return invokeQueryInterceptors((Query<TYPE>) query, 0);
+      return invokeQueryInterceptors((Query<TYPE>) query, pagination, 0);
    }
 
-   private <TYPE> TYPE invokeQueryInterceptors(Query<TYPE> query, int index)
+   private <TYPE, PAGE> PAGE invokeQueryInterceptors(Query<TYPE> query, Pagination<TYPE, PAGE> pagination, int index)
    {
       if (index >= queryInterceptors.size())
       {
-         return dispatcher.perform(query);
+         return dispatcher.perform(query, pagination);
       }
+
       QueryInterceptor interceptor = queryInterceptors.get(index);
-      return interceptor.intercept(query, () -> invokeQueryInterceptors(query, index + 1));
+      return interceptor.intercept(query, pagination, p -> invokeQueryInterceptors(query, p, index + 1));
    }
 }

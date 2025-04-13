@@ -13,11 +13,12 @@ class EntityQueryHandler implements QueryHandler<EntityQuery, Entity>
    );
 
    @Override
-   public Entity handle(EntityQuery query)
+   public <PAGE> PAGE handle(EntityQuery query, Pagination<Entity, PAGE> pagination)
    {
-      return inMemoryEntities.stream()
+      var entity = inMemoryEntities.stream()
             .filter(e -> e.name.equals(query.getName()))
             .findFirst()
             .orElseThrow(() -> new NoSuchElementException("Entity not found"));
+      return pagination.expandSingle(entity);
    }
 }

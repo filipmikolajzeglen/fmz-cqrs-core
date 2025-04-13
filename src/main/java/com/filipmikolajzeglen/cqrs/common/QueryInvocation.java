@@ -1,7 +1,7 @@
 package com.filipmikolajzeglen.cqrs.common;
 
 @FunctionalInterface
-public interface QueryInvocation<TYPE>
+public interface QueryInvocation<TYPE, PAGE>
 {
-   TYPE invoke();
+   PAGE invoke(Pagination<TYPE, PAGE> pagination);
 }

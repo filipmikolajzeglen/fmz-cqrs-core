@@ -31,14 +31,15 @@ public class Dispatcher
       {
          throw NoHandlerException.of(command);
       }
+
       return handler.handle(command);
    }
 
-   public <QUERY extends Query<? extends TYPE>, TYPE> TYPE perform(QUERY query)
+   public <QUERY extends Query<? extends TYPE>, TYPE, PAGE> PAGE perform(QUERY query, Pagination<TYPE, PAGE> pagination)
    {
       if (query instanceof AutonomousQuery<?>)
       {
-         return ((AutonomousQuery<TYPE>) query).perform(new AutonomousQueryContext(this));
+         return ((AutonomousQuery<TYPE>) query).perform(new AutonomousQueryContext(this), pagination);
       }
 
       QueryHandler<QUERY, TYPE> handler = (QueryHandler<QUERY, TYPE>) queryHandlers.get(query);
@@ -46,6 +47,7 @@ public class Dispatcher
       {
          throw NoHandlerException.of(query);
       }
-      return handler.handle(query);
+
+      return handler.handle(query, pagination);
    }
 }
