@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-class EntityQuery extends Query<Entity>
+class DummyEntityQuery extends Query<DummyEntity>
 {
    @NotNull String name;
 }

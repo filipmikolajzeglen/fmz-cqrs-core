@@ -26,13 +26,42 @@ public interface Pagination<DATA, PAGE>
       return new ListPagination<>();
    }
 
-   static <TYPE> Pagination<TYPE, PagedResult<TYPE>> paged(int page, int size)
+   static <TYPE> Pagination<TYPE, Boolean> exist()
    {
-      return new PagedResultPagination<>(page, size);
+      return new ExistPagination<>();
+   }
+
+   static <TYPE> Pagination<TYPE, Long> count()
+   {
+      return new CountPagination<>();
+   }
+
+   static <TYPE> Pagination<TYPE, Optional<TYPE>> first()
+   {
+      return new FirstPagination<>();
+   }
+
+   static <TYPE> Pagination<TYPE, PagedResult<TYPE>> paged(int page, int size, int totalCount)
+   {
+      return new PagedResultPagination<>(page, size, totalCount);
    }
 
    static <TYPE> Pagination<TYPE, SliceResult<TYPE>> sliced(int offset, int limit)
    {
       return new SliceResultPagination<>(offset, limit);
+   }
+
+   default Optional<Pageable> asPageable()
+   {
+      return Optional.empty();
+   }
+
+   interface Pageable
+   {
+      int offset();
+
+      int limit();
+
+      boolean requireTotalCount();
    }
 }

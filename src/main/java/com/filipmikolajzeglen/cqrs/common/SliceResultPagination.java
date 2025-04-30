@@ -1,7 +1,11 @@
 package com.filipmikolajzeglen.cqrs.common;
 
 import java.util.List;
+import java.util.Optional;
 
+import lombok.Getter;
+
+@Getter
 public class SliceResultPagination<TYPE> implements Pagination<TYPE, SliceResult<TYPE>>
 {
    private final int offset;
@@ -43,5 +47,30 @@ public class SliceResultPagination<TYPE> implements Pagination<TYPE, SliceResult
    public SliceResult<TYPE> reduceEmpty()
    {
       return expand(List.of());
+   }
+
+   @Override
+   public Optional<Pageable> asPageable()
+   {
+      return Optional.of(new Pageable()
+      {
+         @Override
+         public int offset()
+         {
+            return offset;
+         }
+
+         @Override
+         public int limit()
+         {
+            return limit;
+         }
+
+         @Override
+         public boolean requireTotalCount()
+         {
+            return false;
+         }
+      });
    }
 }

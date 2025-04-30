@@ -1,9 +1,9 @@
 package com.filipmikolajzeglen.cqrs.common;
 
-class FaultyCommandHandler implements CommandHandler<FaultyCommand, Entity>
+class FaultyCommandHandler implements CommandHandler<FaultyCommand, DummyEntity>
 {
    @Override
-   public Entity handle(FaultyCommand command)
+   public DummyEntity handle(FaultyCommand command)
    {
       throw new RuntimeException("Simulated handler failure");
    }

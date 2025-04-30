@@ -8,38 +8,38 @@ class DispatcherDecoratorSpec extends Specification {
    def "should log execution of command"() {
       given:
       def logCaptor = LogCaptor.forClass(LoggingCommandInterceptor)
-      def handler = new EntityCreateCommandHandler()
+      def handler = new DummyEntityCreateCommandHandler()
       def dispatcher = new DispatcherDecorator(new Dispatcher([handler], []), [new LoggingCommandInterceptor()], [])
-      def command = new EntityCreateCommand(name: "Test Entity")
+      def command = new DummyEntityCreateCommand(name: "Test Entity")
 
       when:
       dispatcher.execute(command)
 
       then:
       logCaptor.infoLogs.any {
-         it.contains("Executing command 'class com.filipmikolajzeglen.cqrs.common.EntityCreateCommand'")
+         it.contains("Executing command 'class com.filipmikolajzeglen.cqrs.common.DummyEntityCreateCommand'")
       }
       logCaptor.infoLogs.any {
-         it.contains("Command result 'class com.filipmikolajzeglen.cqrs.common.Entity'")
+         it.contains("Command result 'class com.filipmikolajzeglen.cqrs.common.DummyEntity'")
       }
    }
 
    def "should log execution of query"() {
       given:
       def logCaptor = LogCaptor.forClass(LoggingQueryInterceptor)
-      def handler = new EntityQueryHandler()
+      def handler = new DummyEntityQueryHandler()
       def dispatcher = new DispatcherDecorator(new Dispatcher([], [handler]), [], [new LoggingQueryInterceptor()])
-      def query = new EntityQuery(name: "Test Entity 1")
+      def query = new DummyEntityQuery(name: "Test Entity 1")
 
       when:
       dispatcher.perform(query, Pagination.single())
 
       then:
       logCaptor.infoLogs.any {
-         it.contains("Performing query 'class com.filipmikolajzeglen.cqrs.common.EntityQuery'")
+         it.contains("Performing query 'class com.filipmikolajzeglen.cqrs.common.DummyEntityQuery'")
       }
       logCaptor.infoLogs.any {
-         it.contains("Query result 'class com.filipmikolajzeglen.cqrs.common.Entity'")
+         it.contains("Query result 'class com.filipmikolajzeglen.cqrs.common.DummyEntity'")
       }
    }
 

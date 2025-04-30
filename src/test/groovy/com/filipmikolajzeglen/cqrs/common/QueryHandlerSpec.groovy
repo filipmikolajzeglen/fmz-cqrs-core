@@ -7,8 +7,8 @@ class QueryHandlerSpec extends Specification {
 
    def "should handle command and return expected result - #name"(String name, boolean flag) {
       given:
-      def query = new EntityQuery(name: name)
-      def handler = new EntityQueryHandler()
+      def query = new DummyEntityQuery(name: name)
+      def handler = new DummyEntityQueryHandler()
 
       when:
       def result = handler.handle(query, Pagination.single())
@@ -26,8 +26,8 @@ class QueryHandlerSpec extends Specification {
 
    def "should throw NoSuchElementException"() {
       given:
-      def query = new EntityQuery(name: 'Test Entity 5')
-      def handler = new EntityQueryHandler()
+      def query = new DummyEntityQuery(name: 'Test Entity 5')
+      def handler = new DummyEntityQueryHandler()
 
       when:
       handler.handle(query, Pagination.single())

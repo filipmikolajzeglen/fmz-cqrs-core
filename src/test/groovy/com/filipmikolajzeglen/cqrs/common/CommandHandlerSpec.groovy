@@ -7,8 +7,8 @@ class CommandHandlerSpec extends Specification {
 
    def "should handle command and return expected result"() {
       given:
-      def command = new EntityCreateCommand(name: "Test Entity", flag: true)
-      def handler = new EntityCreateCommandHandler()
+      def command = new DummyEntityCreateCommand(name: "Test Entity", flag: true)
+      def handler = new DummyEntityCreateCommandHandler()
 
       when:
       def result = handler.handle(command)
