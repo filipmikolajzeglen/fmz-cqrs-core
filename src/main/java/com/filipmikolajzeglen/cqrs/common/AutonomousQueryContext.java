@@ -7,7 +7,7 @@ public class AutonomousQueryContext
 {
    private final Dispatcher dispatcher;
 
-   protected <TYPE, PAGE> PAGE perform(Query<TYPE> query, Pagination<TYPE, PAGE> pagination)
+   public <TYPE, PAGE> PAGE perform(Query<TYPE> query, Pagination<TYPE, PAGE> pagination)
    {
       return dispatcher.perform(query, pagination);
    }

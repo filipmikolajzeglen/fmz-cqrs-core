@@ -8,7 +8,7 @@
     <version>1.0.2</version>
   </parent>
 
-  <groupId>com.filipmikolajzeglen.cqrs.common</groupId>
+  <groupId>com.filipmikolajzeglen.cqrs</groupId>
   <artifactId>fmz-cqrs-common</artifactId>
   <version>1.0.0-SNAPSHOT</version>
 

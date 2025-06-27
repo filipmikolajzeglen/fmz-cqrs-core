@@ -53,9 +53,15 @@ class HandlerRegistry<KEY, TYPE>
          if (type instanceof ParameterizedType parameterized)
          {
             Type actualType = parameterized.getActualTypeArguments()[0];
-            if (baseClass.isAssignableFrom((Class<?>) actualType))
+            if (actualType instanceof Class<?> actualClass && baseClass.isAssignableFrom(actualClass))
             {
-               return (Class<? extends KEY>) actualType;
+               return (Class<? extends KEY>) actualClass;
+            }
+
+            if (actualType instanceof ParameterizedType pt && pt.getRawType() instanceof Class<?> rawClass
+                  && baseClass.isAssignableFrom(rawClass))
+            {
+               return (Class<? extends KEY>) rawClass;
             }
          }
       }
