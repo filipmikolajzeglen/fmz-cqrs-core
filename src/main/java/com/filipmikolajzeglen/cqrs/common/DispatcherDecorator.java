@@ -2,7 +2,7 @@ package com.filipmikolajzeglen.cqrs.common;
 
 import java.util.List;
 
-public class DispatcherDecorator extends Dispatcher
+public class DispatcherDecorator implements Dispatcher
 {
    private final Dispatcher dispatcher;
    private final List<CommandInterceptor> commandInterceptors;
@@ -12,7 +12,6 @@ public class DispatcherDecorator extends Dispatcher
          List<CommandInterceptor> commandInterceptors,
          List<QueryInterceptor> queryInterceptors)
    {
-      super(List.of(), List.of());
       this.dispatcher = dispatcher;
       this.commandInterceptors = commandInterceptors;
       this.queryInterceptors = queryInterceptors;
@@ -48,7 +47,6 @@ public class DispatcherDecorator extends Dispatcher
       {
          return dispatcher.perform(query, pagination);
       }
-
       QueryInterceptor interceptor = queryInterceptors.get(index);
       return interceptor.intercept(query, pagination, p -> invokeQueryInterceptors(query, p, index + 1));
    }

@@ -11,13 +11,12 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class DispatcherConfiguration
 {
    @Bean
-   public Dispatcher dispatcher(
+   public DispatcherDecorator dispatcher(
          List<CommandHandler<?, ?>> commandHandlers,
          List<QueryHandler<?, ?>> queryHandlers)
    {
-      Dispatcher dispatcher = new Dispatcher(commandHandlers, queryHandlers);
       return new DispatcherDecorator(
-            dispatcher,
+            new DispatcherImpl(commandHandlers, queryHandlers),
             List.of(
                   new LoggingCommandInterceptor(),
                   new TransactionalCommandInterceptor()
