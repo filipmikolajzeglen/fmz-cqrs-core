@@ -1,6 +1,5 @@
 package com.filipmikolajzeglen.cqrs.common
 
-import spock.lang.Ignore
 import spock.lang.Specification
 
 class DispatcherSpec extends Specification {
@@ -139,7 +138,6 @@ class DispatcherSpec extends Specification {
       result.get().name == "Optional Entity"
    }
 
-   @Ignore
    def "should perform query and return paged result"() {
       given:
       def handler = new MultiEntityQueryHandler()
@@ -147,7 +145,7 @@ class DispatcherSpec extends Specification {
       def query = new MultiEntityQuery()
 
       when:
-      def result = dispatcher.perform(query, Pagination.paged(0, 1))
+      def result = dispatcher.perform(query, Pagination.paged(0, 1, 6))
 
       then:
       with(result) {

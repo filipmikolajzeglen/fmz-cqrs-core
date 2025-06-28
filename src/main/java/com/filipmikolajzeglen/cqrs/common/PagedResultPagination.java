@@ -22,8 +22,8 @@ public class PagedResultPagination<TYPE> implements Pagination<TYPE, PagedResult
    @Override
    public PagedResult<TYPE> expand(List<TYPE> elements)
    {
-      int fromIndex = 0;
-      int toIndex = elements.size();
+      int fromIndex = Math.min(page * size, elements.size());
+      int toIndex = Math.min(fromIndex + size, elements.size());
       List<TYPE> content = elements.subList(fromIndex, toIndex);
       int totalPages = (int) Math.ceil((double) totalCount / size);
 
