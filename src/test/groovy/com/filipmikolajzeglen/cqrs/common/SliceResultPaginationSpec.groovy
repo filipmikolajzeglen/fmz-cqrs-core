@@ -58,4 +58,25 @@ class SliceResultPaginationSpec extends Specification {
       e.message == "expandSingle can only be used with offset = 0"
    }
 
+   def "expand with offset beyond list returns empty content"() {
+      given:
+      def pagination = new SliceResultPagination<String>(10, 5)
+
+      when:
+      def result = pagination.expand(elements)
+
+      then:
+      result.content == []
+      !result.hasNext
+   }
+
+   def "asPageable returns correct Pageable"() {
+      when:
+      def pageable = pagination.asPageable().get()
+
+      then:
+      pageable.offset() == 1
+      pageable.limit() == 2
+      !pageable.requireTotalCount()
+   }
 }

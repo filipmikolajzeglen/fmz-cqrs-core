@@ -72,4 +72,14 @@ class PagedResultPaginationSpec extends Specification {
          totalPages == 1
       }
    }
+
+   def "asPageable returns correct Pageable"() {
+      when:
+      def pageable = pagination.asPageable().get()
+
+      then:
+      pageable.offset() == 3
+      pageable.limit() == 3
+      pageable.requireTotalCount()
+   }
 }

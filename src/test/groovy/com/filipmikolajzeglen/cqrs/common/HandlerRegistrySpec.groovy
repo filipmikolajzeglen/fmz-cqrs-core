@@ -103,4 +103,22 @@ class HandlerRegistrySpec extends Specification {
       registry.handlers.containsKey(MyCommand)
       registry.handlers.containsKey(OtherCommand)
    }
+
+   def "should extract handled type from parameterized interface"() {
+      given:
+      def handler = new ParameterizedCommandHandler()
+      def registry = new HandlerRegistry<Command, CommandHandler>([handler], Command)
+
+      when:
+      def resolved = registry.get(new ParameterizedCommand())
+
+      then:
+      resolved == handler
+   }
+
+   static class ParameterizedCommand extends Command<String> {}
+   static class ParameterizedCommandHandler implements CommandHandler<ParameterizedCommand, String> {
+      @Override
+      String handle(ParameterizedCommand command) { "ok" }
+   }
 }
