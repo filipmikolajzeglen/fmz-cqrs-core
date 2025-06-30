@@ -2,12 +2,12 @@ package com.filipmikolajzeglen.cqrs.common
 
 import spock.lang.Specification
 
-class DispatcherSpec extends Specification {
+class DispatcherRegistrySpec extends Specification {
 
    def "should execute command and return expected result"() {
       given:
       def handler = new DummyEntityCreateCommandHandler()
-      def dispatcher = new DispatcherImpl([handler], [])
+      def dispatcher = new DispatcherRegistry([handler], [])
       def command = new DummyEntityCreateCommand(name: "Test Entity")
 
       when:
@@ -22,7 +22,7 @@ class DispatcherSpec extends Specification {
    def "should perform query and return expected result"() {
       given:
       def handler = new DummyEntityQueryHandler()
-      def dispatcher = new DispatcherImpl([], [handler])
+      def dispatcher = new DispatcherRegistry([], [handler])
       def query = new DummyEntityQuery(name: "Test Entity 2")
 
       when:
@@ -37,7 +37,7 @@ class DispatcherSpec extends Specification {
    def "should throw RuntimeException due to lack of handler for command"() {
       given:
       def handler = new DummyEntityCreateCommandHandler()
-      def dispatcher = new DispatcherImpl([handler], [])
+      def dispatcher = new DispatcherRegistry([handler], [])
       def command = new DummyEntityCommandWithoutHandler()
 
       when:
@@ -51,7 +51,7 @@ class DispatcherSpec extends Specification {
    def "should throw RuntimeException due to lack of handler for query"() {
       given:
       def handler = new DummyEntityQueryHandler()
-      def dispatcher = new DispatcherImpl([], [handler])
+      def dispatcher = new DispatcherRegistry([], [handler])
       def query = new DummyEntityQueryWithoutHandler()
 
       when:
@@ -64,7 +64,7 @@ class DispatcherSpec extends Specification {
 
    def "should execute autonomous command using AutonomousCommandContext"() {
       given:
-      def dispatcher = new DispatcherImpl([], [])
+      def dispatcher = new DispatcherRegistry([], [])
       def command = new TestAutonomousCommand()
 
       when:
@@ -76,7 +76,7 @@ class DispatcherSpec extends Specification {
 
    def "should perform autonomous query using AutonomousQueryContext"() {
       given:
-      def dispatcher = new DispatcherImpl([], [])
+      def dispatcher = new DispatcherRegistry([], [])
       def query = new TestAutonomousQuery()
 
       when:
@@ -88,7 +88,7 @@ class DispatcherSpec extends Specification {
 
    def "should chain autonomous commands and queries inside another autonomous command"() {
       given:
-      def dispatcher = new DispatcherImpl([], [])
+      def dispatcher = new DispatcherRegistry([], [])
       def command = new ChainedAutonomousCommand()
 
       when:
@@ -100,7 +100,7 @@ class DispatcherSpec extends Specification {
 
    def "should chain autonomous queries inside another autonomous query"() {
       given:
-      def dispatcher = new DispatcherImpl([], [])
+      def dispatcher = new DispatcherRegistry([], [])
       def query = new ChainedAutonomousQuery()
 
       when:
@@ -113,7 +113,7 @@ class DispatcherSpec extends Specification {
    def "should perform query and return paginated list result"() {
       given:
       def handler = new MultiEntityQueryHandler()
-      def dispatcher = new DispatcherImpl([], [handler])
+      def dispatcher = new DispatcherRegistry([], [handler])
       def query = new MultiEntityQuery()
 
       when:
@@ -127,7 +127,7 @@ class DispatcherSpec extends Specification {
    def "should perform query and return optional result"() {
       given:
       def handler = new OptionalEntityQueryHandler()
-      def dispatcher = new DispatcherImpl([], [handler])
+      def dispatcher = new DispatcherRegistry([], [handler])
       def query = new OptionalEntityQuery()
 
       when:
@@ -141,7 +141,7 @@ class DispatcherSpec extends Specification {
    def "should perform query and return paged result"() {
       given:
       def handler = new MultiEntityQueryHandler()
-      def dispatcher = new DispatcherImpl([], [handler])
+      def dispatcher = new DispatcherRegistry([], [handler])
       def query = new MultiEntityQuery()
 
       when:
@@ -162,7 +162,7 @@ class DispatcherSpec extends Specification {
    def "should perform query and return sliced result"() {
       given:
       def handler = new MultiEntityQueryHandler()
-      def dispatcher = new DispatcherImpl([], [handler])
+      def dispatcher = new DispatcherRegistry([], [handler])
       def query = new MultiEntityQuery()
 
       when:

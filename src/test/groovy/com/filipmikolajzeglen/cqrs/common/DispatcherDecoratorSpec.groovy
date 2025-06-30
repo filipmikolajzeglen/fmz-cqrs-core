@@ -9,7 +9,7 @@ class DispatcherDecoratorSpec extends Specification {
       given:
       def logCaptor = LogCaptor.forClass(LoggingCommandInterceptor)
       def handler = new DummyEntityCreateCommandHandler()
-      def dispatcher = new DispatcherDecorator(new DispatcherImpl([handler], []), [new LoggingCommandInterceptor()], [])
+      def dispatcher = new DispatcherDecorator(new DispatcherRegistry([handler], []), [new LoggingCommandInterceptor()], [])
       def command = new DummyEntityCreateCommand(name: "Test Entity")
 
       when:
@@ -28,7 +28,7 @@ class DispatcherDecoratorSpec extends Specification {
       given:
       def logCaptor = LogCaptor.forClass(LoggingQueryInterceptor)
       def handler = new DummyEntityQueryHandler()
-      def dispatcher = new DispatcherDecorator(new DispatcherImpl([], [handler]), [], [new LoggingQueryInterceptor()])
+      def dispatcher = new DispatcherDecorator(new DispatcherRegistry([], [handler]), [], [new LoggingQueryInterceptor()])
       def query = new DummyEntityQuery(name: "Test Entity 1")
 
       when:

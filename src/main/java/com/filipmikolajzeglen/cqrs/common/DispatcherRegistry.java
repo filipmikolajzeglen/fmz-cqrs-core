@@ -7,13 +7,13 @@ import org.springframework.stereotype.Service;
 
 @SuppressWarnings("unchecked")
 @Service
-public class DispatcherImpl implements Dispatcher
+public class DispatcherRegistry implements Dispatcher
 {
    private final HandlerRegistry<Command<?>, CommandHandler<?, ?>> commandHandlers;
    private final HandlerRegistry<Query<?>, QueryHandler<?, ?>> queryHandlers;
 
    @Autowired
-   public DispatcherImpl(List<CommandHandler<?, ?>> commandHandlers, List<QueryHandler<?, ?>> queryHandlers)
+   public DispatcherRegistry(List<CommandHandler<?, ?>> commandHandlers, List<QueryHandler<?, ?>> queryHandlers)
    {
       this.commandHandlers = new HandlerRegistry<>(commandHandlers, Command.class);
       this.queryHandlers = new HandlerRegistry<>(queryHandlers, Query.class);

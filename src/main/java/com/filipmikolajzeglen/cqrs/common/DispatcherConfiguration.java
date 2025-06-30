@@ -16,7 +16,7 @@ public class DispatcherConfiguration
          List<QueryHandler<?, ?>> queryHandlers)
    {
       return new DispatcherDecorator(
-            new DispatcherImpl(commandHandlers, queryHandlers),
+            new DispatcherRegistry(commandHandlers, queryHandlers),
             List.of(
                   new LoggingCommandInterceptor(),
                   new TransactionalCommandInterceptor()
