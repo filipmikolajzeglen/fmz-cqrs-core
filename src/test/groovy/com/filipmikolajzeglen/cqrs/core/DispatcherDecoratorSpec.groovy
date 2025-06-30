@@ -17,10 +17,10 @@ class DispatcherDecoratorSpec extends Specification {
 
       then:
       logCaptor.infoLogs.any {
-         it.contains("Executing command 'class com.filipmikolajzeglen.cqrs.common.DummyEntityCreateCommand'")
+         it.contains("Executing command 'class com.filipmikolajzeglen.cqrs.core.DummyEntityCreateCommand'")
       }
       logCaptor.infoLogs.any {
-         it.contains("Command result 'class com.filipmikolajzeglen.cqrs.common.DummyEntity'")
+         it.contains("Command result 'class com.filipmikolajzeglen.cqrs.core.DummyEntity'")
       }
    }
 
@@ -36,10 +36,10 @@ class DispatcherDecoratorSpec extends Specification {
 
       then:
       logCaptor.infoLogs.any {
-         it.contains("Performing query 'class com.filipmikolajzeglen.cqrs.common.DummyEntityQuery'")
+         it.contains("Performing query 'class com.filipmikolajzeglen.cqrs.core.DummyEntityQuery'")
       }
       logCaptor.infoLogs.any {
-         it.contains("Query result 'class com.filipmikolajzeglen.cqrs.common.DummyEntity'")
+         it.contains("Query result 'class com.filipmikolajzeglen.cqrs.core.DummyEntity'")
       }
    }
 
