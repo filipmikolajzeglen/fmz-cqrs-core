@@ -21,4 +21,10 @@ public class CountPagination<TYPE> implements Pagination<TYPE, Long>
    {
       return 0L;
    }
+
+   @Override
+   public PaginationType getType()
+   {
+      return PaginationType.COUNT;
+   }
 }

@@ -21,4 +21,10 @@ public class ExistPagination<TYPE> implements Pagination<TYPE, Boolean>
    {
       return false;
    }
+
+   @Override
+   public PaginationType getType()
+   {
+      return PaginationType.EXIST;
+   }
 }

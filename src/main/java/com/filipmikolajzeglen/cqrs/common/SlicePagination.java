@@ -1,17 +1,16 @@
 package com.filipmikolajzeglen.cqrs.common;
 
 import java.util.List;
-import java.util.Optional;
 
 import lombok.Getter;
 
 @Getter
-public class SliceResultPagination<TYPE> implements Pagination<TYPE, SliceResult<TYPE>>
+public class SlicePagination<TYPE> implements Pagination<TYPE, SliceResult<TYPE>>
 {
    private final int offset;
    private final int limit;
 
-   public SliceResultPagination(int offset, int limit)
+   public SlicePagination(int offset, int limit)
    {
       this.offset = offset;
       this.limit = limit;
@@ -37,9 +36,7 @@ public class SliceResultPagination<TYPE> implements Pagination<TYPE, SliceResult
    public SliceResult<TYPE> expandSingle(TYPE element)
    {
       if (offset != 0)
-      {
          throw new IllegalStateException("expandSingle can only be used with offset = 0");
-      }
       return expand(List.of(element));
    }
 
@@ -50,27 +47,14 @@ public class SliceResultPagination<TYPE> implements Pagination<TYPE, SliceResult
    }
 
    @Override
-   public Optional<Pageable> asPageable()
+   public PaginationType getType()
    {
-      return Optional.of(new Pageable()
-      {
-         @Override
-         public int offset()
-         {
-            return offset;
-         }
-
-         @Override
-         public int limit()
-         {
-            return limit;
-         }
-
-         @Override
-         public boolean requireTotalCount()
-         {
-            return false;
-         }
-      });
+      return PaginationType.SLICED;
    }
+
+   @Override
+   public int getOffset() { return offset; }
+
+   @Override
+   public int getLimit() { return limit; }
 }

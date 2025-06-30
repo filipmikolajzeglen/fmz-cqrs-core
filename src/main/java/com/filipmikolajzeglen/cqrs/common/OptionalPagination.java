@@ -30,4 +30,10 @@ public class OptionalPagination<TYPE> implements Pagination<TYPE, Optional<TYPE>
    {
       return Optional.empty();
    }
+
+   @Override
+   public PaginationType getType()
+   {
+      return PaginationType.OPTIONAL;
+   }
 }

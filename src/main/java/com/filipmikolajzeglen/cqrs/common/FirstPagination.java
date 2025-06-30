@@ -24,27 +24,14 @@ public class FirstPagination<TYPE> implements Pagination<TYPE, Optional<TYPE>>
    }
 
    @Override
-   public Optional<Pageable> asPageable()
+   public PaginationType getType()
    {
-      return Optional.of(new Pageable()
-      {
-         @Override
-         public int offset()
-         {
-            return 0;
-         }
-
-         @Override
-         public int limit()
-         {
-            return 1;
-         }
-
-         @Override
-         public boolean requireTotalCount()
-         {
-            return false;
-         }
-      });
+      return PaginationType.FIRST;
    }
+
+   @Override
+   public int getOffset() { return 0; }
+
+   @Override
+   public int getLimit() { return 1; }
 }

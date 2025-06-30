@@ -2,7 +2,7 @@ package com.filipmikolajzeglen.cqrs.common
 
 import spock.lang.Specification
 
-class SliceResultPaginationSpec extends Specification {
+class SlicePaginationSpec extends Specification {
 
    def elements = ["A", "B", "C", "D", "E"]
    def pagination = Pagination.sliced(1, 2)
@@ -32,7 +32,7 @@ class SliceResultPaginationSpec extends Specification {
 
    def "expandSingle with offset = 0 wraps element as slice"() {
       given:
-      def pagination = new SliceResultPagination<String>(0, 5)
+      def pagination = new SlicePagination<String>(0, 5)
 
       when:
       def result = pagination.expandSingle("X")
@@ -48,7 +48,7 @@ class SliceResultPaginationSpec extends Specification {
 
    def "expandSingle throws when offset > 0"() {
       given:
-      def pagination = new SliceResultPagination<String>(1, 5)
+      def pagination = new SlicePagination<String>(1, 5)
 
       when:
       pagination.expandSingle("X")
@@ -60,7 +60,7 @@ class SliceResultPaginationSpec extends Specification {
 
    def "expand with offset beyond list returns empty content"() {
       given:
-      def pagination = new SliceResultPagination<String>(10, 5)
+      def pagination = new SlicePagination<String>(10, 5)
 
       when:
       def result = pagination.expand(elements)
@@ -68,15 +68,5 @@ class SliceResultPaginationSpec extends Specification {
       then:
       result.content == []
       !result.hasNext
-   }
-
-   def "asPageable returns correct Pageable"() {
-      when:
-      def pageable = pagination.asPageable().get()
-
-      then:
-      pageable.offset() == 1
-      pageable.limit() == 2
-      !pageable.requireTotalCount()
    }
 }

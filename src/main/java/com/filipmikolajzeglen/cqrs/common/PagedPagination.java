@@ -1,18 +1,17 @@
 package com.filipmikolajzeglen.cqrs.common;
 
 import java.util.List;
-import java.util.Optional;
 
 import lombok.Getter;
 
 @Getter
-public class PagedResultPagination<TYPE> implements Pagination<TYPE, PagedResult<TYPE>>
+public class PagedPagination<TYPE> implements Pagination<TYPE, PagedResult<TYPE>>
 {
    private final int page;
    private final int size;
    private final int totalCount;
 
-   public PagedResultPagination(int page, int size, int totalCount)
+   public PagedPagination(int page, int size, int totalCount)
    {
       this.page = page;
       this.size = size;
@@ -40,9 +39,7 @@ public class PagedResultPagination<TYPE> implements Pagination<TYPE, PagedResult
    public PagedResult<TYPE> expandSingle(TYPE element)
    {
       if (page != 0)
-      {
          throw new IllegalStateException("expandSingle can only be used with page = 0");
-      }
       return expand(List.of(element));
    }
 
@@ -53,27 +50,14 @@ public class PagedResultPagination<TYPE> implements Pagination<TYPE, PagedResult
    }
 
    @Override
-   public Optional<Pageable> asPageable()
+   public PaginationType getType()
    {
-      return Optional.of(new Pageable()
-      {
-         @Override
-         public int offset()
-         {
-            return page * size;
-         }
-
-         @Override
-         public int limit()
-         {
-            return size;
-         }
-
-         @Override
-         public boolean requireTotalCount()
-         {
-            return true;
-         }
-      });
+      return PaginationType.PAGED;
    }
+
+   @Override
+   public int getPage() { return page; }
+
+   @Override
+   public int getSize() { return size; }
 }

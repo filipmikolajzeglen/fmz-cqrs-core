@@ -21,4 +21,10 @@ public class ListPagination<TYPE> implements Pagination<TYPE, List<TYPE>>
    {
       return List.of();
    }
+
+   @Override
+   public PaginationType getType()
+   {
+      return PaginationType.LIST;
+   }
 }

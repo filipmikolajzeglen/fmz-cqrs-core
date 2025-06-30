@@ -2,7 +2,7 @@ package com.filipmikolajzeglen.cqrs.common
 
 import spock.lang.Specification
 
-class PagedResultPaginationSpec extends Specification {
+class PagedPaginationSpec extends Specification {
 
    def elements = (1..7).collect { "Item-$it" }
    def pagination = Pagination.paged(1, 3, 7)
@@ -29,7 +29,7 @@ class PagedResultPaginationSpec extends Specification {
 
    def "expandSingle with page = 0 wraps element in first page"() {
       given:
-      def pagination = new PagedResultPagination<String>(0, 5, 1)
+      def pagination = new PagedPagination<String>(0, 5, 1)
 
       when:
       def result = pagination.expandSingle("Only")
@@ -46,7 +46,7 @@ class PagedResultPaginationSpec extends Specification {
 
    def "expandSingle throws when page > 0"() {
       given:
-      def pagination = new PagedResultPagination<String>(1, 5, 1)
+      def pagination = new PagedPagination<String>(1, 5, 1)
 
       when:
       pagination.expandSingle("Only")
@@ -58,7 +58,7 @@ class PagedResultPaginationSpec extends Specification {
 
    def "expand with single element and page > 0 returns empty page"() {
       given:
-      def pagination = new PagedResultPagination<String>(1, 5, 1)
+      def pagination = new PagedPagination<String>(1, 5, 1)
 
       when:
       def result = pagination.expand(["Only"])
@@ -71,15 +71,5 @@ class PagedResultPaginationSpec extends Specification {
          totalElements == 1
          totalPages == 1
       }
-   }
-
-   def "asPageable returns correct Pageable"() {
-      when:
-      def pageable = pagination.asPageable().get()
-
-      then:
-      pageable.offset() == 3
-      pageable.limit() == 3
-      pageable.requireTotalCount()
    }
 }

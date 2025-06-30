@@ -11,6 +11,28 @@ public interface Pagination<DATA, PAGE>
 
    PAGE reduceEmpty();
 
+   PaginationType getType();
+
+   default int getPage()
+   {
+      throw new UnsupportedOperationException();
+   }
+
+   default int getSize()
+   {
+      throw new UnsupportedOperationException();
+   }
+
+   default int getOffset()
+   {
+      throw new UnsupportedOperationException();
+   }
+
+   default int getLimit()
+   {
+      throw new UnsupportedOperationException();
+   }
+
    static <TYPE> Pagination<TYPE, TYPE> single()
    {
       return new SinglePagination<>();
@@ -43,25 +65,11 @@ public interface Pagination<DATA, PAGE>
 
    static <TYPE> Pagination<TYPE, PagedResult<TYPE>> paged(int page, int size, int totalCount)
    {
-      return new PagedResultPagination<>(page, size, totalCount);
+      return new PagedPagination<>(page, size, totalCount);
    }
 
    static <TYPE> Pagination<TYPE, SliceResult<TYPE>> sliced(int offset, int limit)
    {
-      return new SliceResultPagination<>(offset, limit);
-   }
-
-   default Optional<Pageable> asPageable()
-   {
-      return Optional.empty();
-   }
-
-   interface Pageable
-   {
-      int offset();
-
-      int limit();
-
-      boolean requireTotalCount();
+      return new SlicePagination<>(offset, limit);
    }
 }

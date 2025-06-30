@@ -30,14 +30,4 @@ class FirstPaginationSpec extends Specification {
       expect:
       pagination.reduceEmpty() == Optional.empty()
    }
-
-   def "asPageable returns correct Pageable"() {
-      when:
-      def pageable = pagination.asPageable().get()
-
-      then:
-      pageable.offset() == 0
-      pageable.limit() == 1
-      !pageable.requireTotalCount()
-   }
 }

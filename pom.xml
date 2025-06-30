@@ -14,6 +14,31 @@
 
   <name>FMZ - CQRS - Common</name>
 
+  <url>https://github.com/filipmikolajzeglen</url>
+  <inceptionYear>2025</inceptionYear>
+  <licenses>
+    <license>
+      <name>Apache 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>Raienyu</id>
+      <name>Filip Mikołaj Żegleń</name>
+      <email>filipmikolajzeglen@gmail.com</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:https://github.com/filipmikolajzeglen/fmz-cqrs-common.git</connection>
+    <developerConnection>scm:git:git@github.com:filipmikolajzeglen/fmz-cqrs-common.git</developerConnection>
+    <tag>HEAD</tag>
+    <url>https://github.com/filipmikolajzeglen/fmz-cqrs-common</url>
+  </scm>
+
   <dependencies>
     <dependency>
       <groupId>org.springframework</groupId>

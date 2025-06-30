@@ -30,4 +30,10 @@ public class SinglePagination<TYPE> implements Pagination<TYPE, TYPE>
    {
       throw new NoSuchElementException("No result found");
    }
+
+   @Override
+   public PaginationType getType()
+   {
+      return PaginationType.SINGLE;
+   }
 }
