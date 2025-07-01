@@ -1,19 +1,17 @@
 package com.filipmikolajzeglen.cqrs.core;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class LoggingQueryInterceptor implements QueryInterceptor
 {
-   private static final Logger LOGGER = LogManager.getLogger(LoggingQueryInterceptor.class);
-
    @Override
    public <TYPE, PAGE> PAGE intercept(Query<TYPE> query, Pagination<TYPE, PAGE> pagination,
          QueryInvocation<TYPE, PAGE> next)
    {
-      LOGGER.info("Performing query '{}'", query.getClass());
+      log.info("Performing query '{}' with pagination type '{}'", query.getClass(), pagination.getType());
       PAGE result = next.invoke(pagination);
-      LOGGER.info("Query result '{}'", result.getClass());
+      log.info("Query result '{}'", result.getClass());
       return result;
    }
 }

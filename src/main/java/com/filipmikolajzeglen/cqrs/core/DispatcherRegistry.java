@@ -2,17 +2,12 @@ package com.filipmikolajzeglen.cqrs.core;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 @SuppressWarnings("unchecked")
-@Service
 public class DispatcherRegistry implements Dispatcher
 {
    private final HandlerRegistry<Command<?>, CommandHandler<?, ?>> commandHandlers;
    private final HandlerRegistry<Query<?>, QueryHandler<?, ?>> queryHandlers;
 
-   @Autowired
    public DispatcherRegistry(List<CommandHandler<?, ?>> commandHandlers, List<QueryHandler<?, ?>> queryHandlers)
    {
       this.commandHandlers = new HandlerRegistry<>(commandHandlers, Command.class);
