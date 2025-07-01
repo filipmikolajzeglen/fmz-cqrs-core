@@ -2,6 +2,11 @@ package com.filipmikolajzeglen.cqrs.core;
 
 import java.util.List;
 
+/**
+ * Pagination strategy that returns {@code true} if any elements exist, otherwise {@code false}.
+ *
+ * @param <TYPE> the element type
+ */
 public class ExistPagination<TYPE> implements Pagination<TYPE, Boolean>
 {
    @Override

@@ -4,6 +4,11 @@ import java.util.List;
 
 import lombok.Getter;
 
+/**
+ * Pagination strategy that returns a slice of elements as a {@link SliceResult}.
+ *
+ * @param <TYPE> the element type
+ */
 @Getter
 public class SlicePagination<TYPE> implements Pagination<TYPE, SliceResult<TYPE>>
 {

@@ -2,6 +2,9 @@ package com.filipmikolajzeglen.cqrs.core;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Command interceptor that logs command execution and results.
+ */
 @Slf4j
 public class LoggingCommandInterceptor implements CommandInterceptor
 {

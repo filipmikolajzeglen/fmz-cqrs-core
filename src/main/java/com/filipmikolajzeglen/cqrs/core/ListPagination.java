@@ -2,6 +2,11 @@ package com.filipmikolajzeglen.cqrs.core;
 
 import java.util.List;
 
+/**
+ * Pagination strategy that returns all elements as a {@link List}.
+ *
+ * @param <TYPE> the element type
+ */
 public class ListPagination<TYPE> implements Pagination<TYPE, List<TYPE>>
 {
    @Override

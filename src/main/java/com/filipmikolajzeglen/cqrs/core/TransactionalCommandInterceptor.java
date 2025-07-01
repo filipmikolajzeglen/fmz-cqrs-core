@@ -1,5 +1,8 @@
 package com.filipmikolajzeglen.cqrs.core;
 
+/**
+ * Command interceptor that can be used to wrap command execution in a transaction.
+ */
 public class TransactionalCommandInterceptor implements CommandInterceptor
 {
    @Override

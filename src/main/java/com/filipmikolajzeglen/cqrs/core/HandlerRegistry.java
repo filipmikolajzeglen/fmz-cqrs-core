@@ -9,6 +9,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import lombok.AccessLevel;
 import lombok.Getter;
 
+/**
+ * Registry for associating handlers with their corresponding command or query types.
+ *
+ * @param <KEY> the key type (command or query)
+ * @param <TYPE> the handler type
+ */
 @Getter(AccessLevel.PACKAGE)
 class HandlerRegistry<KEY, TYPE>
 {
@@ -23,6 +29,12 @@ class HandlerRegistry<KEY, TYPE>
       }
    }
 
+   /**
+    * Retrieves the handler for the given instance, or null if not found.
+    *
+    * @param instance the command or query instance
+    * @return the handler, or null if not registered
+    */
    @SuppressWarnings("unchecked")
    public TYPE get(KEY instance)
    {

@@ -3,6 +3,12 @@ package com.filipmikolajzeglen.cqrs.core;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+/**
+ * Pagination strategy that returns a single element.
+ * Throws an exception if no element or more than one element is found.
+ *
+ * @param <TYPE> the element type
+ */
 public class SinglePagination<TYPE> implements Pagination<TYPE, TYPE>
 {
    @Override
