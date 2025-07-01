@@ -1,5 +1,8 @@
 package com.filipmikolajzeglen.cqrs.core;
 
+/**
+ * Query interceptor that can be used to wrap query execution in a transaction.
+ */
 public class TransactionalQueryInterceptor implements QueryInterceptor
 {
    @Override

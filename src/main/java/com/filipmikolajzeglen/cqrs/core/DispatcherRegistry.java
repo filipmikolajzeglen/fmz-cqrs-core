@@ -2,6 +2,10 @@ package com.filipmikolajzeglen.cqrs.core;
 
 import java.util.List;
 
+/**
+ * Default implementation of {@link Dispatcher} that uses handler registries
+ * to resolve and execute commands and queries.
+ */
 @SuppressWarnings("unchecked")
 public class DispatcherRegistry implements Dispatcher
 {
@@ -14,6 +18,9 @@ public class DispatcherRegistry implements Dispatcher
       this.queryHandlers = new HandlerRegistry<>(queryHandlers, Query.class);
    }
 
+   /**
+    * Executes the given command using the appropriate handler or autonomous context.
+    */
    @Override
    public <COMMAND extends Command<? extends TYPE>, TYPE> TYPE execute(COMMAND command)
    {
@@ -29,6 +36,9 @@ public class DispatcherRegistry implements Dispatcher
       return handler.handle(command);
    }
 
+   /**
+    * Performs the given query using the appropriate handler or autonomous context.
+    */
    @Override
    public <QUERY extends Query<? extends TYPE>, TYPE, PAGE> PAGE perform(QUERY query, Pagination<TYPE, PAGE> pagination)
    {

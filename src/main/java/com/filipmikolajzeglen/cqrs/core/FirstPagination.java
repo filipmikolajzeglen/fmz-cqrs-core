@@ -3,6 +3,11 @@ package com.filipmikolajzeglen.cqrs.core;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Pagination strategy that returns the first element as an {@link Optional}.
+ *
+ * @param <TYPE> the element type
+ */
 public class FirstPagination<TYPE> implements Pagination<TYPE, Optional<TYPE>>
 {
    @Override

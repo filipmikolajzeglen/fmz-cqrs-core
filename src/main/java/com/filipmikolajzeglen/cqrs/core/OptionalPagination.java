@@ -3,6 +3,12 @@ package com.filipmikolajzeglen.cqrs.core;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Pagination strategy that returns a single element as an {@link Optional}.
+ * Throws an exception if more than one element is found.
+ *
+ * @param <TYPE> the element type
+ */
 public class OptionalPagination<TYPE> implements Pagination<TYPE, Optional<TYPE>>
 {
    @Override

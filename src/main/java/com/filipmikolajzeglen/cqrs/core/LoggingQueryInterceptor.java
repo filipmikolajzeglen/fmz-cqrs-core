@@ -2,6 +2,9 @@ package com.filipmikolajzeglen.cqrs.core;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Query interceptor that logs query execution and results.
+ */
 @Slf4j
 public class LoggingQueryInterceptor implements QueryInterceptor
 {

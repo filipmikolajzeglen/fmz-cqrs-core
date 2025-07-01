@@ -4,6 +4,11 @@ import java.util.List;
 
 import lombok.Getter;
 
+/**
+ * Pagination strategy that returns a page of elements as a {@link PagedResult}.
+ *
+ * @param <TYPE> the element type
+ */
 @Getter
 public class PagedPagination<TYPE> implements Pagination<TYPE, PagedResult<TYPE>>
 {

@@ -2,6 +2,9 @@ package com.filipmikolajzeglen.cqrs.core;
 
 import java.util.List;
 
+/**
+ * Decorator for {@link Dispatcher} that applies command and query interceptors.
+ */
 public class DispatcherDecorator implements Dispatcher
 {
    private final Dispatcher dispatcher;
@@ -17,6 +20,9 @@ public class DispatcherDecorator implements Dispatcher
       this.queryInterceptors = queryInterceptors;
    }
 
+   /**
+    * Executes the command, applying all registered command interceptors.
+    */
    @SuppressWarnings("unchecked")
    @Override
    public <COMMAND extends Command<? extends TYPE>, TYPE> TYPE execute(COMMAND command)
@@ -34,6 +40,9 @@ public class DispatcherDecorator implements Dispatcher
       return interceptor.intercept(command, () -> invokeCommandInterceptors(command, index + 1));
    }
 
+   /**
+    * Performs the query, applying all registered query interceptors.
+    */
    @SuppressWarnings("unchecked")
    @Override
    public <QUERY extends Query<? extends TYPE>, TYPE, PAGE> PAGE perform(QUERY query, Pagination<TYPE, PAGE> pagination)

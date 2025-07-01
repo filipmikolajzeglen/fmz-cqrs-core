@@ -1,5 +1,8 @@
 package com.filipmikolajzeglen.cqrs.core;
 
+/**
+ * Exception thrown when no handler is found for a command or query.
+ */
 class NoHandlerException extends RuntimeException
 {
    private NoHandlerException(String message)

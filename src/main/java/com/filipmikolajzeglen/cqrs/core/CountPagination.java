@@ -2,6 +2,11 @@ package com.filipmikolajzeglen.cqrs.core;
 
 import java.util.List;
 
+/**
+ * Pagination strategy that returns the count of elements as a {@link Long}.
+ *
+ * @param <TYPE> the element type
+ */
 public class CountPagination<TYPE> implements Pagination<TYPE, Long>
 {
    @Override
