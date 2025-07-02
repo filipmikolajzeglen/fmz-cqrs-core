@@ -27,6 +27,35 @@ Add the following dependency to your Maven or Gradle project.
 implementation 'com.filipmikolajzeglen.cqrs:fmz-cqrs-core:1.0.0'
 ```
 
+## Important for GitHub Packages
+
+To fetch dependencies from GitHub Packages, you **must** add the following to your `pom.xml`:
+
+```xml
+<repositories>
+  <repository>
+    <id>github</id>
+    <url>https://maven.pkg.github.com/filipmikolajzeglen</url>
+  </repository>
+</repositories>
+```
+
+And for **Gradle** (in your `build.gradle`):
+
+```groovy
+repositories {
+    maven {
+        url = uri("https://maven.pkg.github.com/filipmikolajzeglen")
+        credentials {
+            username = project.findProperty("gpr.user") ?: System.getenv("USERNAME_GITHUB")
+            password = project.findProperty("gpr.key") ?: System.getenv("TOKEN_GITHUB")
+        }
+    }
+}
+```
+
+Without this, Maven or Gradle will not be able to download dependencies from the GitHub repository.
+
 ## Handler Registration in Spring and Micronaut
 
 Handler registration is automatic when using the following integration modules:
