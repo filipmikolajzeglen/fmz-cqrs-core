@@ -86,6 +86,16 @@ public interface Pagination<DATA, PAGE>
    }
 
    /**
+    * Accepts a visitor for this pagination strategy.
+    *
+    * @param visitor the visitor to accept
+    * @param page the paginated result to visit
+    * @param <R> the return type of the visitor
+    * @return the result from the visitor
+    */
+   <R> R accept(PaginationVisitor<DATA, PAGE, R> visitor, PAGE page);
+
+   /**
     * Returns a pagination instance for a single element.
     *
     * @param <TYPE> the element type
@@ -154,9 +164,9 @@ public interface Pagination<DATA, PAGE>
    /**
     * Returns a pagination instance for paged results.
     *
-    * @param <TYPE> the element type
-    * @param page the page number
-    * @param size the page size
+    * @param <TYPE>     the element type
+    * @param page       the page number
+    * @param size       the page size
     * @param totalCount the total number of elements
     * @return the pagination instance
     */
@@ -170,11 +180,12 @@ public interface Pagination<DATA, PAGE>
     *
     * @param <TYPE> the element type
     * @param offset the offset
-    * @param limit the limit
+    * @param limit  the limit
     * @return the pagination instance
     */
    static <TYPE> Pagination<TYPE, SliceResult<TYPE>> sliced(int offset, int limit)
    {
       return new SlicePagination<>(offset, limit);
    }
+
 }

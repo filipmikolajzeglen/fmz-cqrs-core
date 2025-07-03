@@ -39,4 +39,21 @@ class SinglePaginationSpec extends Specification {
       then:
       thrown(NoSuchElementException)
    }
+
+   def "getType returns SINGLE"() {
+      expect:
+      pagination.getType() == PaginationType.SINGLE
+   }
+
+   def "accept calls visitor.visitSingle"() {
+      given:
+      def visitor = Mock(PaginationVisitor)
+      def value = "X"
+
+      when:
+      pagination.accept(visitor, value)
+
+      then:
+      1 * visitor.visitSingle(pagination, value)
+   }
 }

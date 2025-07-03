@@ -30,4 +30,21 @@ class ExistPaginationSpec extends Specification {
       expect:
       pagination.reduceEmpty() == false
    }
+
+   def "getType returns EXIST"() {
+      expect:
+      pagination.getType() == PaginationType.EXIST
+   }
+
+   def "accept calls visitor.visitExist"() {
+      given:
+      def visitor = Mock(PaginationVisitor)
+      def value = true
+
+      when:
+      pagination.accept(visitor, value)
+
+      then:
+      1 * visitor.visitExist(pagination, value)
+   }
 }

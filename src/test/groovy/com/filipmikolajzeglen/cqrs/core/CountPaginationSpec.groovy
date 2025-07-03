@@ -25,4 +25,21 @@ class CountPaginationSpec extends Specification {
       expect:
       pagination.reduceEmpty() == 0L
    }
+
+   def "getType returns COUNT"() {
+      expect:
+      pagination.getType() == PaginationType.COUNT
+   }
+
+   def "accept calls visitor.visitCount"() {
+      given:
+      def visitor = Mock(PaginationVisitor)
+      def value = 5L
+
+      when:
+      pagination.accept(visitor, value)
+
+      then:
+      1 * visitor.visitCount(pagination, value)
+   }
 }

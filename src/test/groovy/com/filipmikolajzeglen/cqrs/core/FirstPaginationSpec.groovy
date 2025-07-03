@@ -29,5 +29,24 @@ class FirstPaginationSpec extends Specification {
    def "reduceEmpty returns Optional.empty"() {
       expect:
       pagination.reduceEmpty() == Optional.empty()
+      pagination.offset == 0
+      pagination.limit == 1
+   }
+
+   def "getType returns FIRST"() {
+      expect:
+      pagination.getType() == PaginationType.FIRST
+   }
+
+   def "accept calls visitor.visitFirst"() {
+      given:
+      def visitor = Mock(PaginationVisitor)
+      def value = Optional.of("A")
+
+      when:
+      pagination.accept(visitor, value)
+
+      then:
+      1 * visitor.visitFirst(pagination, value)
    }
 }

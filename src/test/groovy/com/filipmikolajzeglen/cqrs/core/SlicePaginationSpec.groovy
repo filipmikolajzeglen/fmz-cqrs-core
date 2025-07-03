@@ -69,4 +69,23 @@ class SlicePaginationSpec extends Specification {
       result.content == []
       !result.hasNext
    }
+
+   def "getType returns SLICED"() {
+      expect:
+      pagination.getType() == PaginationType.SLICED
+      pagination.offset == 1
+      pagination.limit == 2
+   }
+
+   def "accept calls visitor.visitSliced"() {
+      given:
+      def visitor = Mock(PaginationVisitor)
+      def sliceResult = pagination.expand(elements)
+
+      when:
+      pagination.accept(visitor, sliceResult)
+
+      then:
+      1 * visitor.visitSliced(pagination, sliceResult)
+   }
 }

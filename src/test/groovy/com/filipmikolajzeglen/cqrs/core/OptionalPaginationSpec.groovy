@@ -38,4 +38,21 @@ class OptionalPaginationSpec extends Specification {
       expect:
       pagination.reduceEmpty() == Optional.empty()
    }
+
+   def "getType returns OPTIONAL"() {
+      expect:
+      pagination.getType() == PaginationType.OPTIONAL
+   }
+
+   def "accept calls visitor.visitOptional"() {
+      given:
+      def visitor = Mock(PaginationVisitor)
+      def value = Optional.of("X")
+
+      when:
+      pagination.accept(visitor, value)
+
+      then:
+      1 * visitor.visitOptional(pagination, value)
+   }
 }

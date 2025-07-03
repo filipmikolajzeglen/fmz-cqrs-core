@@ -25,4 +25,21 @@ class ListPaginationSpec extends Specification {
       expect:
       pagination.reduceEmpty() == []
    }
+
+   def "getType returns LIST"() {
+      expect:
+      pagination.getType() == PaginationType.LIST
+   }
+
+   def "accept calls visitor.visitList"() {
+      given:
+      def visitor = Mock(PaginationVisitor)
+      def value = ["A", "B"]
+
+      when:
+      pagination.accept(visitor, value)
+
+      then:
+      1 * visitor.visitList(pagination, value)
+   }
 }

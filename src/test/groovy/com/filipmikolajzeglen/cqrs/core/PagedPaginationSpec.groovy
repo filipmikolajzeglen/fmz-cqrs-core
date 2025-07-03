@@ -72,4 +72,23 @@ class PagedPaginationSpec extends Specification {
          totalPages == 1
       }
    }
+
+   def "getType returns PAGED"() {
+      expect:
+      pagination.getType() == PaginationType.PAGED
+      pagination.page == 1
+      pagination.size == 3
+   }
+
+   def "accept calls visitor.visitPaged"() {
+      given:
+      def visitor = Mock(PaginationVisitor)
+      def pagedResult = pagination.expand(elements)
+
+      when:
+      pagination.accept(visitor, pagedResult)
+
+      then:
+      1 * visitor.visitPaged(pagination, pagedResult)
+   }
 }
