@@ -49,4 +49,18 @@ class FirstPaginationSpec extends Specification {
       then:
       1 * visitor.visitFirst(pagination, value)
    }
+
+   def "orderedByAsc and orderedByDesc add sorts"() {
+      given:
+      def pagination = Pagination.first()
+            .orderedByAsc("foo")
+            .orderedByDesc("bar")
+
+      expect:
+      pagination.getSorts().size() == 2
+      pagination.getSorts()[0].property == "foo"
+      pagination.getSorts()[0].direction == Sort.Direction.ASC
+      pagination.getSorts()[1].property == "bar"
+      pagination.getSorts()[1].direction == Sort.Direction.DESC
+   }
 }

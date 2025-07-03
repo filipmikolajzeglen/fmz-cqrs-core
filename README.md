@@ -18,7 +18,7 @@ Add the following dependency to your Maven or Gradle project.
 <dependency>
    <groupId>com.filipmikolajzeglen.cqrs</groupId>
    <artifactId>fmz-cqrs-core</artifactId>
-   <version>1.0.0</version>
+   <version>1.1.0</version>
 </dependency>
 ```
 
@@ -256,6 +256,64 @@ PagedResult<MyEntity> page = dispatcher.perform(myQuery, Pagination.paged(0, 10,
 ```
 
 Choose the pagination strategy that best fits your use case and pass it to the `perform` method of the dispatcher.
+
+---
+
+## Sorting in Pagination
+
+Some pagination strategies support sorting of results. These implement the `SortablePagination` interface, which allows you to specify the order of returned elements by one or more properties.
+
+### Supported Pagination Types
+
+Sorting is available for the following pagination types:
+- `Pagination.all()` (`ListPagination`)
+- `Pagination.first()` (`FirstPagination`)
+- `Pagination.paged(...)` (`PagedPagination`)
+- `Pagination.sliced(...)` (`SlicePagination`)
+
+### Defining Sorting
+
+To specify sorting, use the `orderedByAsc(property)` or `orderedByDesc(property)` methods on the pagination instance. You can chain multiple calls to set sorting by several fields (in priority order).
+
+#### Example usage:
+
+```java
+// Sort ascending by the "name" field
+List<MyEntity> entities = dispatcher.perform(
+    myQuery,
+    Pagination.all().orderedByAsc("name")
+);
+
+// Sort descending by "createdAt", then ascending by "name"
+PagedResult<MyEntity> page = dispatcher.perform(
+    myQuery,
+    Pagination.paged(0, 10, totalCount)
+        .orderedByDesc("createdAt")
+        .orderedByAsc("name")
+);
+```
+
+### Retrieving Sorting Information
+
+You can retrieve the list of declared sort orders using the `getSorts()` method:
+
+```java
+SortablePagination<MyEntity, ?> pagination = Pagination.all()
+    .orderedByAsc("name")
+    .orderedByDesc("createdAt");
+
+List<Sort> sorts = pagination.getSorts();
+for (Sort sort : sorts) {
+    System.out.println(sort.getProperty() + " " + sort.getDirection());
+}
+```
+
+### Notes
+
+- Sorting is declarative — it is up to the handler implementation or persistence layer to interpret and apply the sorting according to the specified fields.
+- If you do not declare any sorting, results may be returned in any order.
+
+---
 
 ## Advanced Pagination and Persistence
 

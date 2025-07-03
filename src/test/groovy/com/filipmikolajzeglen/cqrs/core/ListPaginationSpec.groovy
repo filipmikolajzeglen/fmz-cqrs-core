@@ -42,4 +42,18 @@ class ListPaginationSpec extends Specification {
       then:
       1 * visitor.visitList(pagination, value)
    }
+
+   def "orderedByAsc and orderedByDesc add sorts"() {
+      given:
+      def pagination = Pagination.all()
+            .orderedByAsc("foo")
+            .orderedByDesc("bar")
+
+      expect:
+      pagination.getSorts().size() == 2
+      pagination.getSorts()[0].property == "foo"
+      pagination.getSorts()[0].direction == Sort.Direction.ASC
+      pagination.getSorts()[1].property == "bar"
+      pagination.getSorts()[1].direction == Sort.Direction.DESC
+   }
 }

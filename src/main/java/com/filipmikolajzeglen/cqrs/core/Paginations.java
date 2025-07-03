@@ -1,5 +1,7 @@
 package com.filipmikolajzeglen.cqrs.core;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -86,39 +88,6 @@ class OptionalPagination<TYPE> implements Pagination<TYPE, Optional<TYPE>>
    }
 }
 
-class ListPagination<TYPE> implements Pagination<TYPE, List<TYPE>>
-{
-   @Override
-   public List<TYPE> expand(List<TYPE> elements)
-   {
-      return elements;
-   }
-
-   @Override
-   public List<TYPE> expandSingle(TYPE element)
-   {
-      return List.of(element);
-   }
-
-   @Override
-   public List<TYPE> reduceEmpty()
-   {
-      return List.of();
-   }
-
-   @Override
-   public PaginationType getType()
-   {
-      return PaginationType.LIST;
-   }
-
-   @Override
-   public <R> R accept(PaginationVisitor<TYPE, List<TYPE>, R> visitor, List<TYPE> page)
-   {
-      return visitor.visitList(this, page);
-   }
-}
-
 class ExistPagination<TYPE> implements Pagination<TYPE, Boolean>
 {
    @Override
@@ -185,8 +154,85 @@ class CountPagination<TYPE> implements Pagination<TYPE, Long>
    }
 }
 
-class FirstPagination<TYPE> implements Pagination<TYPE, Optional<TYPE>>
+class ListPagination<TYPE> implements SortablePagination<TYPE, List<TYPE>>
 {
+   private final List<Sort> sorts = new ArrayList<>();
+
+   @Override
+   public SortablePagination<TYPE, List<TYPE>> orderedByAsc(String property)
+   {
+      sorts.add(new Sort(property, Sort.Direction.ASC));
+      return this;
+   }
+
+   @Override
+   public SortablePagination<TYPE, List<TYPE>> orderedByDesc(String property)
+   {
+      sorts.add(new Sort(property, Sort.Direction.DESC));
+      return this;
+   }
+
+   @Override
+   public List<Sort> getSorts()
+   {
+      return Collections.unmodifiableList(sorts);
+   }
+
+   @Override
+   public List<TYPE> expand(List<TYPE> elements)
+   {
+      return elements;
+   }
+
+   @Override
+   public List<TYPE> expandSingle(TYPE element)
+   {
+      return List.of(element);
+   }
+
+   @Override
+   public List<TYPE> reduceEmpty()
+   {
+      return List.of();
+   }
+
+   @Override
+   public PaginationType getType()
+   {
+      return PaginationType.LIST;
+   }
+
+   @Override
+   public <R> R accept(PaginationVisitor<TYPE, List<TYPE>, R> visitor, List<TYPE> page)
+   {
+      return visitor.visitList(this, page);
+   }
+}
+
+class FirstPagination<TYPE> implements SortablePagination<TYPE, Optional<TYPE>>
+{
+   private final List<Sort> sorts = new ArrayList<>();
+
+   @Override
+   public SortablePagination<TYPE, Optional<TYPE>> orderedByAsc(String property)
+   {
+      sorts.add(new Sort(property, Sort.Direction.ASC));
+      return this;
+   }
+
+   @Override
+   public SortablePagination<TYPE, Optional<TYPE>> orderedByDesc(String property)
+   {
+      sorts.add(new Sort(property, Sort.Direction.DESC));
+      return this;
+   }
+
+   @Override
+   public List<Sort> getSorts()
+   {
+      return Collections.unmodifiableList(sorts);
+   }
+
    @Override
    public Optional<TYPE> expand(List<TYPE> elements)
    {
@@ -230,8 +276,9 @@ class FirstPagination<TYPE> implements Pagination<TYPE, Optional<TYPE>>
    }
 }
 
-class PagedPagination<TYPE> implements Pagination<TYPE, PagedResult<TYPE>>
+class PagedPagination<TYPE> implements SortablePagination<TYPE, PagedResult<TYPE>>
 {
+   private final List<Sort> sorts = new ArrayList<>();
    private final int page;
    private final int size;
    private final int totalCount;
@@ -244,12 +291,32 @@ class PagedPagination<TYPE> implements Pagination<TYPE, PagedResult<TYPE>>
    }
 
    @Override
+   public SortablePagination<TYPE, PagedResult<TYPE>> orderedByAsc(String property)
+   {
+      sorts.add(new Sort(property, Sort.Direction.ASC));
+      return this;
+   }
+
+   @Override
+   public SortablePagination<TYPE, PagedResult<TYPE>> orderedByDesc(String property)
+   {
+      sorts.add(new Sort(property, Sort.Direction.DESC));
+      return this;
+   }
+
+   @Override
+   public List<Sort> getSorts()
+   {
+      return Collections.unmodifiableList(sorts);
+   }
+
+   @Override
    public PagedResult<TYPE> expand(List<TYPE> elements)
    {
       int fromIndex = Math.min(page * size, elements.size());
       int toIndex = Math.min(fromIndex + size, elements.size());
       List<TYPE> content = elements.subList(fromIndex, toIndex);
-      int totalPages = (int) Math.ceil((double) totalCount / size);
+      int totalPages = size == 0 ? 0 : (int) Math.ceil((double) totalCount / size);
 
       return PagedResult.<TYPE>builder()
             .withContent(content)
@@ -301,8 +368,9 @@ class PagedPagination<TYPE> implements Pagination<TYPE, PagedResult<TYPE>>
    }
 }
 
-class SlicePagination<TYPE> implements Pagination<TYPE, SliceResult<TYPE>>
+class SlicePagination<TYPE> implements SortablePagination<TYPE, SliceResult<TYPE>>
 {
+   private final List<Sort> sorts = new ArrayList<>();
    private final int offset;
    private final int limit;
 
@@ -310,6 +378,26 @@ class SlicePagination<TYPE> implements Pagination<TYPE, SliceResult<TYPE>>
    {
       this.offset = offset;
       this.limit = limit;
+   }
+
+   @Override
+   public SortablePagination<TYPE, SliceResult<TYPE>> orderedByAsc(String property)
+   {
+      sorts.add(new Sort(property, Sort.Direction.ASC));
+      return this;
+   }
+
+   @Override
+   public SortablePagination<TYPE, SliceResult<TYPE>> orderedByDesc(String property)
+   {
+      sorts.add(new Sort(property, Sort.Direction.DESC));
+      return this;
+   }
+
+   @Override
+   public List<Sort> getSorts()
+   {
+      return Collections.unmodifiableList(sorts);
    }
 
    @Override
@@ -368,4 +456,3 @@ class SlicePagination<TYPE> implements Pagination<TYPE, SliceResult<TYPE>>
       return visitor.visitSliced(this, page);
    }
 }
-
