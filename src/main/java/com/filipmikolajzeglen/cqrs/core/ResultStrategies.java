@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-class SinglePagination<TYPE> implements Pagination<TYPE, TYPE>
+class SingleResultStrategy<TYPE> implements ResultStrategy<TYPE, TYPE>
 {
    @Override
    public TYPE expand(List<TYPE> elements)
@@ -35,19 +35,19 @@ class SinglePagination<TYPE> implements Pagination<TYPE, TYPE>
    }
 
    @Override
-   public PaginationType getType()
+   public ResultStrategyType getType()
    {
-      return PaginationType.SINGLE;
+      return ResultStrategyType.SINGLE;
    }
 
    @Override
-   public <R> R accept(PaginationVisitor<TYPE, TYPE, R> visitor, TYPE page)
+   public <R> R accept(ResultStrategyVisitor<TYPE, TYPE, R> visitor, TYPE page)
    {
       return visitor.visitSingle(this, page);
    }
 }
 
-class OptionalPagination<TYPE> implements Pagination<TYPE, Optional<TYPE>>
+class OptionalResultStrategy<TYPE> implements ResultStrategy<TYPE, Optional<TYPE>>
 {
    @Override
    public Optional<TYPE> expand(List<TYPE> elements)
@@ -76,19 +76,19 @@ class OptionalPagination<TYPE> implements Pagination<TYPE, Optional<TYPE>>
    }
 
    @Override
-   public PaginationType getType()
+   public ResultStrategyType getType()
    {
-      return PaginationType.OPTIONAL;
+      return ResultStrategyType.OPTIONAL;
    }
 
    @Override
-   public <R> R accept(PaginationVisitor<TYPE, Optional<TYPE>, R> visitor, Optional<TYPE> page)
+   public <R> R accept(ResultStrategyVisitor<TYPE, Optional<TYPE>, R> visitor, Optional<TYPE> page)
    {
       return visitor.visitOptional(this, page);
    }
 }
 
-class ExistPagination<TYPE> implements Pagination<TYPE, Boolean>
+class ExistResultStrategy<TYPE> implements ResultStrategy<TYPE, Boolean>
 {
    @Override
    public Boolean expand(List<TYPE> elements)
@@ -109,19 +109,19 @@ class ExistPagination<TYPE> implements Pagination<TYPE, Boolean>
    }
 
    @Override
-   public PaginationType getType()
+   public ResultStrategyType getType()
    {
-      return PaginationType.EXIST;
+      return ResultStrategyType.EXIST;
    }
 
    @Override
-   public <R> R accept(PaginationVisitor<TYPE, Boolean, R> visitor, Boolean page)
+   public <R> R accept(ResultStrategyVisitor<TYPE, Boolean, R> visitor, Boolean page)
    {
       return visitor.visitExist(this, page);
    }
 }
 
-class CountPagination<TYPE> implements Pagination<TYPE, Long>
+class CountResultStrategy<TYPE> implements ResultStrategy<TYPE, Long>
 {
    @Override
    public Long expand(List<TYPE> elements)
@@ -142,38 +142,38 @@ class CountPagination<TYPE> implements Pagination<TYPE, Long>
    }
 
    @Override
-   public PaginationType getType()
+   public ResultStrategyType getType()
    {
-      return PaginationType.COUNT;
+      return ResultStrategyType.COUNT;
    }
 
    @Override
-   public <R> R accept(PaginationVisitor<TYPE, Long, R> visitor, Long page)
+   public <R> R accept(ResultStrategyVisitor<TYPE, Long, R> visitor, Long page)
    {
       return visitor.visitCount(this, page);
    }
 }
 
-class ListPagination<TYPE> implements SortablePagination<TYPE, List<TYPE>>
+class ListResultStrategy<TYPE> implements OrderedResultStrategy<TYPE, List<TYPE>>
 {
-   private final List<Sort> sorts = new ArrayList<>();
+   private final List<Order> sorts = new ArrayList<>();
 
    @Override
-   public SortablePagination<TYPE, List<TYPE>> orderedByAsc(String property)
+   public OrderedResultStrategy<TYPE, List<TYPE>> orderedByAsc(String property)
    {
-      sorts.add(new Sort(property, Sort.Direction.ASC));
+      sorts.add(new Order(property, Order.Direction.ASC));
       return this;
    }
 
    @Override
-   public SortablePagination<TYPE, List<TYPE>> orderedByDesc(String property)
+   public OrderedResultStrategy<TYPE, List<TYPE>> orderedByDesc(String property)
    {
-      sorts.add(new Sort(property, Sort.Direction.DESC));
+      sorts.add(new Order(property, Order.Direction.DESC));
       return this;
    }
 
    @Override
-   public List<Sort> getSorts()
+   public List<Order> getOrders()
    {
       return Collections.unmodifiableList(sorts);
    }
@@ -197,38 +197,38 @@ class ListPagination<TYPE> implements SortablePagination<TYPE, List<TYPE>>
    }
 
    @Override
-   public PaginationType getType()
+   public ResultStrategyType getType()
    {
-      return PaginationType.LIST;
+      return ResultStrategyType.LIST;
    }
 
    @Override
-   public <R> R accept(PaginationVisitor<TYPE, List<TYPE>, R> visitor, List<TYPE> page)
+   public <R> R accept(ResultStrategyVisitor<TYPE, List<TYPE>, R> visitor, List<TYPE> page)
    {
       return visitor.visitList(this, page);
    }
 }
 
-class FirstPagination<TYPE> implements SortablePagination<TYPE, Optional<TYPE>>
+class FirstResultStrategy<TYPE> implements OrderedResultStrategy<TYPE, Optional<TYPE>>
 {
-   private final List<Sort> sorts = new ArrayList<>();
+   private final List<Order> sorts = new ArrayList<>();
 
    @Override
-   public SortablePagination<TYPE, Optional<TYPE>> orderedByAsc(String property)
+   public OrderedResultStrategy<TYPE, Optional<TYPE>> orderedByAsc(String property)
    {
-      sorts.add(new Sort(property, Sort.Direction.ASC));
+      sorts.add(new Order(property, Order.Direction.ASC));
       return this;
    }
 
    @Override
-   public SortablePagination<TYPE, Optional<TYPE>> orderedByDesc(String property)
+   public OrderedResultStrategy<TYPE, Optional<TYPE>> orderedByDesc(String property)
    {
-      sorts.add(new Sort(property, Sort.Direction.DESC));
+      sorts.add(new Order(property, Order.Direction.DESC));
       return this;
    }
 
    @Override
-   public List<Sort> getSorts()
+   public List<Order> getOrders()
    {
       return Collections.unmodifiableList(sorts);
    }
@@ -252,9 +252,9 @@ class FirstPagination<TYPE> implements SortablePagination<TYPE, Optional<TYPE>>
    }
 
    @Override
-   public PaginationType getType()
+   public ResultStrategyType getType()
    {
-      return PaginationType.FIRST;
+      return ResultStrategyType.FIRST;
    }
 
    @Override
@@ -270,20 +270,20 @@ class FirstPagination<TYPE> implements SortablePagination<TYPE, Optional<TYPE>>
    }
 
    @Override
-   public <R> R accept(PaginationVisitor<TYPE, Optional<TYPE>, R> visitor, Optional<TYPE> page)
+   public <R> R accept(ResultStrategyVisitor<TYPE, Optional<TYPE>, R> visitor, Optional<TYPE> page)
    {
       return visitor.visitFirst(this, page);
    }
 }
 
-class PagedPagination<TYPE> implements SortablePagination<TYPE, PagedResult<TYPE>>
+class PagedResultStrategy<TYPE> implements OrderedResultStrategy<TYPE, PagedResult<TYPE>>
 {
-   private final List<Sort> sorts = new ArrayList<>();
+   private final List<Order> sorts = new ArrayList<>();
    private final int page;
    private final int size;
    private final int totalCount;
 
-   public PagedPagination(int page, int size, int totalCount)
+   public PagedResultStrategy(int page, int size, int totalCount)
    {
       this.page = page;
       this.size = size;
@@ -291,21 +291,21 @@ class PagedPagination<TYPE> implements SortablePagination<TYPE, PagedResult<TYPE
    }
 
    @Override
-   public SortablePagination<TYPE, PagedResult<TYPE>> orderedByAsc(String property)
+   public OrderedResultStrategy<TYPE, PagedResult<TYPE>> orderedByAsc(String property)
    {
-      sorts.add(new Sort(property, Sort.Direction.ASC));
+      sorts.add(new Order(property, Order.Direction.ASC));
       return this;
    }
 
    @Override
-   public SortablePagination<TYPE, PagedResult<TYPE>> orderedByDesc(String property)
+   public OrderedResultStrategy<TYPE, PagedResult<TYPE>> orderedByDesc(String property)
    {
-      sorts.add(new Sort(property, Sort.Direction.DESC));
+      sorts.add(new Order(property, Order.Direction.DESC));
       return this;
    }
 
    @Override
-   public List<Sort> getSorts()
+   public List<Order> getOrders()
    {
       return Collections.unmodifiableList(sorts);
    }
@@ -344,9 +344,9 @@ class PagedPagination<TYPE> implements SortablePagination<TYPE, PagedResult<TYPE
    }
 
    @Override
-   public PaginationType getType()
+   public ResultStrategyType getType()
    {
-      return PaginationType.PAGED;
+      return ResultStrategyType.PAGED;
    }
 
    @Override
@@ -362,40 +362,40 @@ class PagedPagination<TYPE> implements SortablePagination<TYPE, PagedResult<TYPE
    }
 
    @Override
-   public <R> R accept(PaginationVisitor<TYPE, PagedResult<TYPE>, R> visitor, PagedResult<TYPE> page)
+   public <R> R accept(ResultStrategyVisitor<TYPE, PagedResult<TYPE>, R> visitor, PagedResult<TYPE> page)
    {
       return visitor.visitPaged(this, page);
    }
 }
 
-class SlicePagination<TYPE> implements SortablePagination<TYPE, SliceResult<TYPE>>
+class SliceResultStrategy<TYPE> implements OrderedResultStrategy<TYPE, SliceResult<TYPE>>
 {
-   private final List<Sort> sorts = new ArrayList<>();
+   private final List<Order> sorts = new ArrayList<>();
    private final int offset;
    private final int limit;
 
-   public SlicePagination(int offset, int limit)
+   public SliceResultStrategy(int offset, int limit)
    {
       this.offset = offset;
       this.limit = limit;
    }
 
    @Override
-   public SortablePagination<TYPE, SliceResult<TYPE>> orderedByAsc(String property)
+   public OrderedResultStrategy<TYPE, SliceResult<TYPE>> orderedByAsc(String property)
    {
-      sorts.add(new Sort(property, Sort.Direction.ASC));
+      sorts.add(new Order(property, Order.Direction.ASC));
       return this;
    }
 
    @Override
-   public SortablePagination<TYPE, SliceResult<TYPE>> orderedByDesc(String property)
+   public OrderedResultStrategy<TYPE, SliceResult<TYPE>> orderedByDesc(String property)
    {
-      sorts.add(new Sort(property, Sort.Direction.DESC));
+      sorts.add(new Order(property, Order.Direction.DESC));
       return this;
    }
 
    @Override
-   public List<Sort> getSorts()
+   public List<Order> getOrders()
    {
       return Collections.unmodifiableList(sorts);
    }
@@ -433,9 +433,9 @@ class SlicePagination<TYPE> implements SortablePagination<TYPE, SliceResult<TYPE
    }
 
    @Override
-   public PaginationType getType()
+   public ResultStrategyType getType()
    {
-      return PaginationType.SLICED;
+      return ResultStrategyType.SLICED;
    }
 
    @Override
@@ -451,7 +451,7 @@ class SlicePagination<TYPE> implements SortablePagination<TYPE, SliceResult<TYPE
    }
 
    @Override
-   public <R> R accept(PaginationVisitor<TYPE, SliceResult<TYPE>, R> visitor, SliceResult<TYPE> page)
+   public <R> R accept(ResultStrategyVisitor<TYPE, SliceResult<TYPE>, R> visitor, SliceResult<TYPE> page)
    {
       return visitor.visitSliced(this, page);
    }

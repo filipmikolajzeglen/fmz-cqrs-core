@@ -45,18 +45,18 @@ public class DispatcherDecorator implements Dispatcher
     */
    @SuppressWarnings("unchecked")
    @Override
-   public <QUERY extends Query<? extends TYPE>, TYPE, PAGE> PAGE perform(QUERY query, Pagination<TYPE, PAGE> pagination)
+   public <QUERY extends Query<? extends TYPE>, TYPE, RESULT> RESULT perform(QUERY query, ResultStrategy<TYPE, RESULT> resultStrategy)
    {
-      return invokeQueryInterceptors((Query<TYPE>) query, pagination, 0);
+      return invokeQueryInterceptors((Query<TYPE>) query, resultStrategy, 0);
    }
 
-   private <TYPE, PAGE> PAGE invokeQueryInterceptors(Query<TYPE> query, Pagination<TYPE, PAGE> pagination, int index)
+   private <TYPE, RESULT> RESULT invokeQueryInterceptors(Query<TYPE> query, ResultStrategy<TYPE, RESULT> resultStrategy, int index)
    {
       if (index >= queryInterceptors.size())
       {
-         return dispatcher.perform(query, pagination);
+         return dispatcher.perform(query, resultStrategy);
       }
       QueryInterceptor interceptor = queryInterceptors.get(index);
-      return interceptor.intercept(query, pagination, p -> invokeQueryInterceptors(query, p, index + 1));
+      return interceptor.intercept(query, resultStrategy, p -> invokeQueryInterceptors(query, p, index + 1));
    }
 }

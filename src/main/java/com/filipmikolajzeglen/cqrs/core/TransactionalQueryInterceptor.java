@@ -6,8 +6,8 @@ package com.filipmikolajzeglen.cqrs.core;
 public class TransactionalQueryInterceptor implements QueryInterceptor
 {
    @Override
-   public <TYPE, PAGE> PAGE intercept(Query<TYPE> query, Pagination<TYPE, PAGE> pagination, QueryInvocation<TYPE, PAGE> next)
+   public <TYPE, RESULT> RESULT intercept(Query<TYPE> query, ResultStrategy<TYPE, RESULT> resultStrategy, QueryInvocation<TYPE, RESULT> next)
    {
-      return next.invoke(pagination);
+      return next.invoke(resultStrategy);
    }
 }

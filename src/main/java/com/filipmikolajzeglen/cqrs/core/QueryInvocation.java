@@ -4,16 +4,16 @@ package com.filipmikolajzeglen.cqrs.core;
  * Represents an invocation of a query in the interceptor chain.
  *
  * @param <TYPE> the element type
- * @param <PAGE> the paginated result type
+ * @param <RESULT> the result type
  */
 @FunctionalInterface
-public interface QueryInvocation<TYPE, PAGE>
+public interface QueryInvocation<TYPE, RESULT>
 {
    /**
-    * Invokes the next element in the query chain with the given pagination.
+    * Invokes the next element in the query chain with the given result strategy.
     *
-    * @param pagination the pagination strategy
-    * @return the paginated result
+    * @param resultStrategy the result strategy
+    * @return the result
     */
-   PAGE invoke(Pagination<TYPE, PAGE> pagination);
+   RESULT invoke(ResultStrategy<TYPE, RESULT> resultStrategy);
 }

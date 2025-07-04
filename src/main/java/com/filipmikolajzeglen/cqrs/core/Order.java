@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Getter
 @RequiredArgsConstructor
-public class Sort
+public class Order
 {
    private final String property;
    private final Direction direction;

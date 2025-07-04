@@ -40,17 +40,17 @@ public class DispatcherRegistry implements Dispatcher
     * Performs the given query using the appropriate handler or autonomous context.
     */
    @Override
-   public <QUERY extends Query<? extends TYPE>, TYPE, PAGE> PAGE perform(QUERY query, Pagination<TYPE, PAGE> pagination)
+   public <QUERY extends Query<? extends TYPE>, TYPE, RESULT> RESULT perform(QUERY query, ResultStrategy<TYPE, RESULT> resultStrategy)
    {
       if (query instanceof AutonomousQuery<?>)
       {
-         return ((AutonomousQuery<TYPE>) query).perform(new AutonomousQueryContext(this), pagination);
+         return ((AutonomousQuery<TYPE>) query).perform(new AutonomousQueryContext(this), resultStrategy);
       }
       QueryHandler<QUERY, TYPE> handler = (QueryHandler<QUERY, TYPE>) queryHandlers.get(query);
       if (handler == null)
       {
          throw NoHandlerException.of(query);
       }
-      return handler.handle(query, pagination);
+      return handler.handle(query, resultStrategy);
    }
 }

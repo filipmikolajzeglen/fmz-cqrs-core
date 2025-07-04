@@ -2,9 +2,9 @@ package com.filipmikolajzeglen.cqrs.core
 
 import spock.lang.Specification
 
-class OptionalPaginationSpec extends Specification {
+class OptionalResultStrategySpec extends Specification {
 
-   def pagination = Pagination.optional()
+   def pagination = ResultStrategy.optional()
 
    def "expandSingle wraps element in Optional"() {
       expect:
@@ -41,12 +41,12 @@ class OptionalPaginationSpec extends Specification {
 
    def "getType returns OPTIONAL"() {
       expect:
-      pagination.getType() == PaginationType.OPTIONAL
+      pagination.getType() == ResultStrategyType.OPTIONAL
    }
 
    def "accept calls visitor.visitOptional"() {
       given:
-      def visitor = Mock(PaginationVisitor)
+      def visitor = Mock(ResultStrategyVisitor)
       def value = Optional.of("X")
 
       when:

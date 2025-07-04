@@ -1,6 +1,6 @@
 # FMZ CQRS Core
 
-**FMZ CQRS Core** is a lightweight Java framework implementing the Command Query Responsibility Segregation (CQRS) pattern. It provides abstractions for commands, queries, handlers, dispatchers, and various pagination strategies. The framework allows you to separate the responsibility of modifying state (commands) from reading state (queries), enabling clean architecture, testability, and scalability.
+**FMZ CQRS Core** is a lightweight Java framework implementing the Command Query Responsibility Segregation (CQRS) pattern. It provides abstractions for commands, queries, handlers, dispatchers, and various result strategies. The framework allows you to separate the responsibility of modifying state (commands) from reading state (queries), enabling clean architecture, testability, and scalability.
 
 ## Overview
 
@@ -101,9 +101,9 @@ public class UserQuery extends Query<User> {
 ```java
 public class UserQueryHandler implements QueryHandler<UserQuery, User> {
    @Override
-   public <PAGE> PAGE handle(UserQuery query, Pagination<User, PAGE> pagination) {
+   public <RESULT> RESULT handle(UserQuery query, ResultStrategy<User, RESULT> resultStrategy) {
       User user = findUserByName(query.name);
-      return pagination.expandSingle(user);
+      return resultStrategy.expandSingle(user);
    }
 }
 ```
@@ -115,7 +115,7 @@ List<QueryHandler<?, ?>> queryHandlers = List.of(new UserQueryHandler());
 Dispatcher dispatcher = new DispatcherRegistry(commandHandlers, queryHandlers);
 
 User created = dispatcher.execute(new UserCreateCommand("Alice"));
-User found = dispatcher.perform(new UserQuery("Alice"), Pagination.single());
+User found = dispatcher.perform(new UserQuery("Alice"), ResultStrategy.single());
 ```
 
 You can also use interceptors for logging or transactions by wrapping the dispatcher with `DispatcherDecorator`.
@@ -132,7 +132,7 @@ public class MainAutonomousCommand extends AutonomousCommand<String> {
         // Execute a sub-command
         String subCommandResult = context.execute(new SubAutonomousCommand());
         // Perform a query and get a single result
-        String subQueryResult = context.perform(new SubAutonomousQuery(), Pagination.single());
+        String subQueryResult = context.perform(new SubAutonomousQuery(), ResultStrategy.single());
         return "MainCommand -> " + subCommandResult + " -> " + subQueryResult;
     }
 }
@@ -146,8 +146,8 @@ public class SubAutonomousCommand extends AutonomousCommand<String> {
 
 public class SubAutonomousQuery extends AutonomousQuery<String> {
     @Override
-    protected <PAGE> PAGE perform(AutonomousQueryContext context, Pagination<String, PAGE> pagination) {
-        return pagination.expandSingle("SubQuery");
+    protected <RESULT> RESULT perform(AutonomousQueryContext context, ResultStrategy<String, RESULT> resultStrategy) {
+        return resultStrategy.expandSingle("SubQuery");
     }
 }
 ```
@@ -156,124 +156,124 @@ public class SubAutonomousQuery extends AutonomousQuery<String> {
 ```java
 public class MainAutonomousQuery extends AutonomousQuery<String> {
    @Override
-   protected <PAGE> PAGE perform(AutonomousQueryContext context, Pagination<String, PAGE> pagination) {
+   protected <RESULT> RESULT perform(AutonomousQueryContext context, ResultStrategy<String, RESULT> resultStrategy) {
       // Perform a sub-query and get its result
-      String subResult = context.perform(new SubAutonomousQuery(), Pagination.single());
-      // Compose the final result using the pagination strategy
-      return pagination.expandSingle("MainQuery -> " + subResult);
+      String subResult = context.perform(new SubAutonomousQuery(), ResultStrategy.single());
+      // Compose the final result using the resultStrategy
+      return resultStrategy.expandSingle("MainQuery -> " + subResult);
    }
 }
 
 public class SubAutonomousQuery extends AutonomousQuery<String> {
    @Override
-   protected <PAGE> PAGE perform(AutonomousQueryContext context, Pagination<String, PAGE> pagination) {
-      return pagination.expandSingle("SubQuery");
+   protected <RESULT> RESULT perform(AutonomousQueryContext context, ResultStrategy<String, RESULT> resultStrategy) {
+      return resultStrategy.expandSingle("SubQuery");
    }
 }
 ```
 
 Autonomous commands and queries are useful for orchestration, chaining, or implementing logic that does not require a dedicated handler.
 
-## Pagination Strategies
+## Result Strategies
 
-This library provides several built-in pagination strategies, each implementing the `Pagination<DATA, PAGE>` interface. You can use them to control how query results are returned and shaped. Below is an overview of each strategy:
+This library provides several built-in result strategies, each implementing the `ResultStrategy<DATA, RESULT>` interface. You can use them to control how query results are returned and shaped. Below is an overview of each strategy:
 
-### 1. `SinglePagination`
+### 1. `SingleResultStrategy`
 - **Type:** Returns a single element.
 - **Behavior:** Throws `NoSuchElementException` if no element is found, or `IllegalStateException` if more than one element is found.
 - **Usage:**
   ```java
-  dispatcher.perform(query, Pagination.single());
+  dispatcher.perform(query, ResultStrategy.single());
   ```
 
-### 2. `OptionalPagination`
+### 2. `OptionalResultStrategy`
 - **Type:** Returns an `Optional<TYPE>`.
 - **Behavior:** Returns `Optional.empty()` if no element is found, `Optional.of(element)` if one element is found, and throws `IllegalStateException` if more than one element is found.
 - **Usage:**
   ```java
-  dispatcher.perform(query, Pagination.optional());
+  dispatcher.perform(query, ResultStrategy.optional());
   ```
 
-### 3. `ListPagination`
+### 3. `ListResultStrategy`
 - **Type:** Returns a `List<TYPE>`.
 - **Behavior:** Returns all elements as a list (may be empty).
 - **Usage:**
   ```java
-  dispatcher.perform(query, Pagination.all());
+  dispatcher.perform(query, ResultStrategy.all());
   ```
 
-### 4. `ExistPagination`
+### 4. `ExistResultStrategy`
 - **Type:** Returns a `Boolean`.
 - **Behavior:** Returns `true` if any element exists, otherwise `false`.
 - **Usage:**
   ```java
-  dispatcher.perform(query, Pagination.exist());
+  dispatcher.perform(query, ResultStrategy.exist());
   ```
 
-### 5. `CountPagination`
+### 5. `CountResultStrategy`
 - **Type:** Returns a `Long`.
 - **Behavior:** Returns the number of elements.
 - **Usage:**
   ```java
-  dispatcher.perform(query, Pagination.count());
+  dispatcher.perform(query, ResultStrategy.count());
   ```
 
-### 6. `FirstPagination`
+### 6. `FirstResultStrategy`
 - **Type:** Returns an `Optional<TYPE>`.
 - **Behavior:** Returns the first element as `Optional`, or `Optional.empty()` if the list is empty.
 - **Usage:**
   ```java
-  dispatcher.perform(query, Pagination.first());
+  dispatcher.perform(query, ResultStrategy.first());
   ```
 
-### 7. `PagedPagination`
+### 7. `PagedResultStrategy`
 - **Type:** Returns a `PagedResult<TYPE>`.
 - **Behavior:** Returns a page of elements, including metadata such as page number, size, total elements, and total pages.
 - **Usage:**
   ```java
-  dispatcher.perform(query, Pagination.paged(page, size, totalCount));
+  dispatcher.perform(query, ResultStrategy.paged(0, 10, totalCount));
   ```
 
-### 8. `SlicePagination`
+### 8. `SliceResultStrategy`
 - **Type:** Returns a `SliceResult<TYPE>`.
 - **Behavior:** Returns a slice (window) of elements with offset and limit, and a flag indicating if more elements are available.
 - **Usage:**
   ```java
-  dispatcher.perform(query, Pagination.sliced(offset, limit));
+  dispatcher.perform(query, ResultStrategy.sliced(offset, limit));
   ```
 
 ### Example
 
 ```java
 // Get a single result (throws if not exactly one)
-MyEntity entity = dispatcher.perform(myQuery, Pagination.single());
+MyEntity entity = dispatcher.perform(myQuery, ResultStrategy.single());
 
 // Get all results as a list
-List<MyEntity> entities = dispatcher.perform(myQuery, Pagination.all());
+List<MyEntity> entities = dispatcher.perform(myQuery, ResultStrategy.all());
 
 // Get a paged result
-PagedResult<MyEntity> page = dispatcher.perform(myQuery, Pagination.paged(0, 10, totalCount));
+PagedResult<MyEntity> page = dispatcher.perform(myQuery, ResultStrategy.paged(0, 10, totalCount));
 ```
 
-Choose the pagination strategy that best fits your use case and pass it to the `perform` method of the dispatcher.
+Choose the result strategy that best fits your use case and pass it to the `perform` method of the dispatcher.
 
 ---
 
-## Sorting in Pagination
+## Sorting in Result Strategies
 
-Some pagination strategies support sorting of results. These implement the `SortablePagination` interface, which allows you to specify the order of returned elements by one or more properties.
+Some result strategies support sorting of results. These implement the `OrderedResultStrategy` interface, which allows you to specify the order of returned elements by one or more properties.
 
-### Supported Pagination Types
+### Supported ResultStrategy Types
 
-Sorting is available for the following pagination types:
-- `Pagination.all()` (`ListPagination`)
-- `Pagination.first()` (`FirstPagination`)
-- `Pagination.paged(...)` (`PagedPagination`)
-- `Pagination.sliced(...)` (`SlicePagination`)
+Sorting is available for the following result strategy types:
+- `ResultStrategy.all()` (`ListResultStrategy`)
+- `ResultStrategy.first()` (`FirstResultStrategy`)
+- `ResultStrategy.paged(...)` (`PagedResultStrategy`)
+- `ResultStrategy.sliced(...)` (`SliceResultStrategy`)
 
 ### Defining Sorting
 
-To specify sorting, use the `orderedByAsc(property)` or `orderedByDesc(property)` methods on the pagination instance. You can chain multiple calls to set sorting by several fields (in priority order).
+To specify sorting, use the `orderedByAsc(property)` or `orderedByDesc(property)` methods on the result strategy instance. You can chain multiple calls to set sorting by several fields (in priority order).
 
 #### Example usage:
 
@@ -281,13 +281,13 @@ To specify sorting, use the `orderedByAsc(property)` or `orderedByDesc(property)
 // Sort ascending by the "name" field
 List<MyEntity> entities = dispatcher.perform(
     myQuery,
-    Pagination.all().orderedByAsc("name")
+    ResultStrategy.all().orderedByAsc("name")
 );
 
 // Sort descending by "createdAt", then ascending by "name"
 PagedResult<MyEntity> page = dispatcher.perform(
     myQuery,
-    Pagination.paged(0, 10, totalCount)
+    ResultStrategy.paged(0, 10, totalCount)
         .orderedByDesc("createdAt")
         .orderedByAsc("name")
 );
@@ -295,16 +295,16 @@ PagedResult<MyEntity> page = dispatcher.perform(
 
 ### Retrieving Sorting Information
 
-You can retrieve the list of declared sort orders using the `getSorts()` method:
+You can retrieve the list of declared sort orders using the `getOrders()` method:
 
 ```java
-SortablePagination<MyEntity, ?> pagination = Pagination.all()
+OrderedResultStrategy<MyEntity, ?> resultStrategy = ResultStrategy.all()
     .orderedByAsc("name")
     .orderedByDesc("createdAt");
 
-List<Sort> sorts = pagination.getSorts();
-for (Sort sort : sorts) {
-    System.out.println(sort.getProperty() + " " + sort.getDirection());
+List<Order> orders = resultStrategy.getOrders();
+for (Order order : orders) {
+    System.out.println(order.getProperty() + " " + order.getDirection());
 }
 ```
 
@@ -315,15 +315,15 @@ for (Sort sort : sorts) {
 
 ---
 
-## Advanced Pagination and Persistence
+## Advanced Result Strategies and Persistence
 
-To support advanced pagination and database operations, the [fmz-cqrs-persistence](https://github.com/filipmikolajzeglen/fmz-cqrs-persistence) module was created. It introduces dedicated abstractions:
+To support advanced result strategies and database operations, the [fmz-cqrs-persistence](https://github.com/filipmikolajzeglen/fmz-cqrs-persistence) module was created. It introduces dedicated abstractions:
 
 - `DatabaseQuery`
 - `DatabaseCommand`
 - `DatabaseSuperCommand`
 
-These types are designed for integration with persistence layers and provide additional features for paginated queries and transactional commands.
+These types are designed for integration with persistence layers and provide additional features for advanced queries and transactional commands.
 
 ## Mentorship
 

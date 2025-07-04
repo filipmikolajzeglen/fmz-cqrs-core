@@ -26,7 +26,7 @@ class DispatcherRegistrySpec extends Specification {
       def query = new DummyEntityQuery(name: "Test Entity 2")
 
       when:
-      def result = dispatcher.perform(query, Pagination.single())
+      def result = dispatcher.perform(query, ResultStrategy.single())
 
       then:
       result != null
@@ -55,7 +55,7 @@ class DispatcherRegistrySpec extends Specification {
       def query = new DummyEntityQueryWithoutHandler()
 
       when:
-      dispatcher.perform(query, Pagination.single())
+      dispatcher.perform(query, ResultStrategy.single())
 
       then:
       def e = thrown(NoHandlerException)
@@ -80,7 +80,7 @@ class DispatcherRegistrySpec extends Specification {
       def query = new TestAutonomousQuery()
 
       when:
-      def result = dispatcher.perform(query, Pagination.single())
+      def result = dispatcher.perform(query, ResultStrategy.single())
 
       then:
       result == "Performed Autonomous Query"
@@ -104,7 +104,7 @@ class DispatcherRegistrySpec extends Specification {
       def query = new ChainedAutonomousQuery()
 
       when:
-      def result = dispatcher.perform(query, Pagination.single())
+      def result = dispatcher.perform(query, ResultStrategy.single())
 
       then:
       result == "MainQuery -> SubQuery"
@@ -117,7 +117,7 @@ class DispatcherRegistrySpec extends Specification {
       def query = new MultiEntityQuery()
 
       when:
-      def result = dispatcher.perform(query, Pagination.all())
+      def result = dispatcher.perform(query, ResultStrategy.all())
 
       then:
       result.size() == 6
@@ -131,7 +131,7 @@ class DispatcherRegistrySpec extends Specification {
       def query = new OptionalEntityQuery()
 
       when:
-      def result = dispatcher.perform(query, Pagination.optional())
+      def result = dispatcher.perform(query, ResultStrategy.optional())
 
       then:
       result.isPresent()
@@ -145,7 +145,7 @@ class DispatcherRegistrySpec extends Specification {
       def query = new MultiEntityQuery()
 
       when:
-      def result = dispatcher.perform(query, Pagination.paged(0, 1, 6))
+      def result = dispatcher.perform(query, ResultStrategy.paged(0, 1, 6))
 
       then:
       with(result) {
@@ -166,7 +166,7 @@ class DispatcherRegistrySpec extends Specification {
       def query = new MultiEntityQuery()
 
       when:
-      def result = dispatcher.perform(query, Pagination.sliced(1, 1))
+      def result = dispatcher.perform(query, ResultStrategy.sliced(1, 1))
 
       then:
       with(result) {
@@ -189,7 +189,7 @@ class DispatcherRegistrySpec extends Specification {
 
    class TestAutonomousQuery extends AutonomousQuery<String> {
       @Override
-      protected <PAGE> PAGE perform(AutonomousQueryContext context, Pagination<String, PAGE> pagination) {
+      protected <PAGE> PAGE perform(AutonomousQueryContext context, ResultStrategy<String, PAGE> pagination) {
          assert context != null
          return pagination.expandSingle("Performed Autonomous Query")
       }
@@ -199,14 +199,14 @@ class DispatcherRegistrySpec extends Specification {
       @Override
       protected String execute(AutonomousCommandContext context) {
          def subResult = context.execute(new SubAutonomousCommand())
-         def queryResult = context.perform(new SubAutonomousQuery(), Pagination.single())
+         def queryResult = context.perform(new SubAutonomousQuery(), ResultStrategy.single())
          return "Main -> ${subResult} -> ${queryResult}"
       }
    }
 
    class ChainedAutonomousQuery extends AutonomousQuery<String> {
       @Override
-      protected <PAGE> PAGE perform(AutonomousQueryContext context, Pagination<String, PAGE> pagination) {
+      protected <PAGE> PAGE perform(AutonomousQueryContext context, ResultStrategy<String, PAGE> pagination) {
          def result = context.perform(new SubAutonomousQuery(), pagination)
          return pagination.expandSingle("MainQuery -> ${result}")
       }
@@ -221,7 +221,7 @@ class DispatcherRegistrySpec extends Specification {
 
    class SubAutonomousQuery extends AutonomousQuery<String> {
       @Override
-      protected <PAGE> PAGE perform(AutonomousQueryContext context, Pagination<String, PAGE> pagination) {
+      protected <PAGE> PAGE perform(AutonomousQueryContext context, ResultStrategy<String, PAGE> pagination) {
          return pagination.expandSingle("SubQuery")
       }
    }
@@ -230,7 +230,7 @@ class DispatcherRegistrySpec extends Specification {
 
    class MultiEntityQueryHandler implements QueryHandler<MultiEntityQuery, DummyEntity> {
       @Override
-      <PAGE> PAGE handle(MultiEntityQuery query, Pagination<DummyEntity, PAGE> pagination) {
+      <PAGE> PAGE handle(MultiEntityQuery query, ResultStrategy<DummyEntity, PAGE> pagination) {
          def entities = [
                DummyEntity.of(1L, "Entity 1", true),
                DummyEntity.of(2L, "Entity 2", false),
@@ -247,7 +247,7 @@ class DispatcherRegistrySpec extends Specification {
 
    class OptionalEntityQueryHandler implements QueryHandler<OptionalEntityQuery, DummyEntity> {
       @Override
-      <PAGE> PAGE handle(OptionalEntityQuery query, Pagination<DummyEntity, PAGE> pagination) {
+      <PAGE> PAGE handle(OptionalEntityQuery query, ResultStrategy<DummyEntity, PAGE> pagination) {
          return pagination.expandSingle(DummyEntity.of(1L, "Optional Entity", true))
       }
    }

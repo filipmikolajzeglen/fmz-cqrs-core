@@ -2,9 +2,9 @@ package com.filipmikolajzeglen.cqrs.core
 
 import spock.lang.Specification
 
-class CountPaginationSpec extends Specification {
+class CountResultStrategySpec extends Specification {
 
-   def pagination = Pagination.count()
+   def pagination = ResultStrategy.count()
 
    def "expand returns size of list as Long"() {
       expect:
@@ -28,12 +28,12 @@ class CountPaginationSpec extends Specification {
 
    def "getType returns COUNT"() {
       expect:
-      pagination.getType() == PaginationType.COUNT
+      pagination.getType() == ResultStrategyType.COUNT
    }
 
    def "accept calls visitor.visitCount"() {
       given:
-      def visitor = Mock(PaginationVisitor)
+      def visitor = Mock(ResultStrategyVisitor)
       def value = 5L
 
       when:

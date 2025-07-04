@@ -9,11 +9,11 @@ import lombok.extern.slf4j.Slf4j;
 public class LoggingQueryInterceptor implements QueryInterceptor
 {
    @Override
-   public <TYPE, PAGE> PAGE intercept(Query<TYPE> query, Pagination<TYPE, PAGE> pagination,
-         QueryInvocation<TYPE, PAGE> next)
+   public <TYPE, RESULT> RESULT intercept(Query<TYPE> query, ResultStrategy<TYPE, RESULT> resultStrategy,
+         QueryInvocation<TYPE, RESULT> next)
    {
-      log.info("Performing query '{}' with pagination type '{}'", query.getClass(), pagination.getType());
-      PAGE result = next.invoke(pagination);
+      log.info("Performing query '{}' with result strategy type '{}'", query.getClass(), resultStrategy.getType());
+      RESULT result = next.invoke(resultStrategy);
       log.info("Query result '{}'", result.getClass());
       return result;
    }

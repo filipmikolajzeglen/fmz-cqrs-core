@@ -2,9 +2,9 @@ package com.filipmikolajzeglen.cqrs.core
 
 import spock.lang.Specification
 
-class FirstPaginationSpec extends Specification {
+class FirstResultStrategySpec extends Specification {
 
-   def pagination = Pagination.first()
+   def pagination = ResultStrategy.first()
 
    def "expand returns first element as Optional"() {
       expect:
@@ -35,12 +35,12 @@ class FirstPaginationSpec extends Specification {
 
    def "getType returns FIRST"() {
       expect:
-      pagination.getType() == PaginationType.FIRST
+      pagination.getType() == ResultStrategyType.FIRST
    }
 
    def "accept calls visitor.visitFirst"() {
       given:
-      def visitor = Mock(PaginationVisitor)
+      def visitor = Mock(ResultStrategyVisitor)
       def value = Optional.of("A")
 
       when:
@@ -50,17 +50,17 @@ class FirstPaginationSpec extends Specification {
       1 * visitor.visitFirst(pagination, value)
    }
 
-   def "orderedByAsc and orderedByDesc add sorts"() {
+   def "orderedByAsc and orderedByDesc add Orders"() {
       given:
-      def pagination = Pagination.first()
+      def pagination = ResultStrategy.first()
             .orderedByAsc("foo")
             .orderedByDesc("bar")
 
       expect:
-      pagination.getSorts().size() == 2
-      pagination.getSorts()[0].property == "foo"
-      pagination.getSorts()[0].direction == Sort.Direction.ASC
-      pagination.getSorts()[1].property == "bar"
-      pagination.getSorts()[1].direction == Sort.Direction.DESC
+      pagination.getOrders().size() == 2
+      pagination.getOrders()[0].property == "foo"
+      pagination.getOrders()[0].direction == Order.Direction.ASC
+      pagination.getOrders()[1].property == "bar"
+      pagination.getOrders()[1].direction == Order.Direction.DESC
    }
 }

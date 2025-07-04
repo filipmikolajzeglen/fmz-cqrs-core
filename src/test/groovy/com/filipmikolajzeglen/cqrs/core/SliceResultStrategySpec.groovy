@@ -2,10 +2,10 @@ package com.filipmikolajzeglen.cqrs.core
 
 import spock.lang.Specification
 
-class SlicePaginationSpec extends Specification {
+class SliceResultStrategySpec extends Specification {
 
    def elements = ["A", "B", "C", "D", "E"]
-   def pagination = Pagination.sliced(1, 2)
+   def pagination = ResultStrategy.sliced(1, 2)
 
    def "expand returns correct slice content"() {
       expect:
@@ -19,7 +19,7 @@ class SlicePaginationSpec extends Specification {
 
    def "expand sets hasNext to false when no more items"() {
       given:
-      def p = Pagination.sliced(3, 3)
+      def p = ResultStrategy.sliced(3, 3)
 
       expect:
       !p.expand(elements).hasNext
@@ -32,7 +32,7 @@ class SlicePaginationSpec extends Specification {
 
    def "expandSingle with offset = 0 wraps element as slice"() {
       given:
-      def pagination = new SlicePagination<String>(0, 5)
+      def pagination = new SliceResultStrategy<String>(0, 5)
 
       when:
       def result = pagination.expandSingle("X")
@@ -48,7 +48,7 @@ class SlicePaginationSpec extends Specification {
 
    def "expandSingle throws when offset > 0"() {
       given:
-      def pagination = new SlicePagination<String>(1, 5)
+      def pagination = new SliceResultStrategy<String>(1, 5)
 
       when:
       pagination.expandSingle("X")
@@ -60,7 +60,7 @@ class SlicePaginationSpec extends Specification {
 
    def "expand with offset beyond list returns empty content"() {
       given:
-      def pagination = new SlicePagination<String>(10, 5)
+      def pagination = new SliceResultStrategy<String>(10, 5)
 
       when:
       def result = pagination.expand(elements)
@@ -72,14 +72,14 @@ class SlicePaginationSpec extends Specification {
 
    def "getType returns SLICED"() {
       expect:
-      pagination.getType() == PaginationType.SLICED
+      pagination.getType() == ResultStrategyType.SLICED
       pagination.offset == 1
       pagination.limit == 2
    }
 
    def "accept calls visitor.visitSliced"() {
       given:
-      def visitor = Mock(PaginationVisitor)
+      def visitor = Mock(ResultStrategyVisitor)
       def sliceResult = pagination.expand(elements)
 
       when:
@@ -89,17 +89,17 @@ class SlicePaginationSpec extends Specification {
       1 * visitor.visitSliced(pagination, sliceResult)
    }
 
-   def "orderedByAsc and orderedByDesc add sorts"() {
+   def "orderedByAsc and orderedByDesc add Orders"() {
       given:
-      def pagination = Pagination.sliced(0, 2)
+      def pagination = ResultStrategy.sliced(0, 2)
             .orderedByAsc("foo")
             .orderedByDesc("bar")
 
       expect:
-      pagination.getSorts().size() == 2
-      pagination.getSorts()[0].property == "foo"
-      pagination.getSorts()[0].direction == Sort.Direction.ASC
-      pagination.getSorts()[1].property == "bar"
-      pagination.getSorts()[1].direction == Sort.Direction.DESC
+      pagination.getOrders().size() == 2
+      pagination.getOrders()[0].property == "foo"
+      pagination.getOrders()[0].direction == Order.Direction.ASC
+      pagination.getOrders()[1].property == "bar"
+      pagination.getOrders()[1].direction == Order.Direction.DESC
    }
 }

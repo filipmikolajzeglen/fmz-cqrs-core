@@ -13,12 +13,12 @@ class DummyEntityQueryHandler implements QueryHandler<DummyEntityQuery, DummyEnt
    );
 
    @Override
-   public <PAGE> PAGE handle(DummyEntityQuery query, Pagination<DummyEntity, PAGE> pagination)
+   public <PAGE> PAGE handle(DummyEntityQuery query, ResultStrategy<DummyEntity, PAGE> resultStrategy)
    {
       var entity = inMemoryEntities.stream()
             .filter(e -> e.name.equals(query.getName()))
             .findFirst()
             .orElseThrow(() -> new NoSuchElementException("Entity not found"));
-      return pagination.expandSingle(entity);
+      return resultStrategy.expandSingle(entity);
    }
 }

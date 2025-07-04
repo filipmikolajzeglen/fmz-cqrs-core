@@ -12,16 +12,16 @@ public class AutonomousQueryContext
    private final Dispatcher dispatcher;
 
    /**
-    * Performs a query with pagination using the dispatcher.
+    * Performs a query with a result strategy using the dispatcher.
     *
     * @param query the query to perform
-    * @param pagination the pagination strategy
+    * @param resultStrategy the result strategy
     * @param <TYPE> the element type
-    * @param <PAGE> the paginated result type
-    * @return the paginated result
+    * @param <RESULT> the result type
+    * @return the result
     */
-   public <TYPE, PAGE> PAGE perform(Query<TYPE> query, Pagination<TYPE, PAGE> pagination)
+   public <TYPE, RESULT> RESULT perform(Query<TYPE> query, ResultStrategy<TYPE, RESULT> resultStrategy)
    {
-      return dispatcher.perform(query, pagination);
+      return dispatcher.perform(query, resultStrategy);
    }
 }

@@ -2,9 +2,9 @@ package com.filipmikolajzeglen.cqrs.core
 
 import spock.lang.Specification
 
-class ExistPaginationSpec extends Specification {
+class ExistResultStrategySpec extends Specification {
 
-   def pagination = Pagination.exist()
+   def pagination = ResultStrategy.exist()
 
    def "expand returns true if list is not empty"() {
       expect:
@@ -33,12 +33,12 @@ class ExistPaginationSpec extends Specification {
 
    def "getType returns EXIST"() {
       expect:
-      pagination.getType() == PaginationType.EXIST
+      pagination.getType() == ResultStrategyType.EXIST
    }
 
    def "accept calls visitor.visitExist"() {
       given:
-      def visitor = Mock(PaginationVisitor)
+      def visitor = Mock(ResultStrategyVisitor)
       def value = true
 
       when:

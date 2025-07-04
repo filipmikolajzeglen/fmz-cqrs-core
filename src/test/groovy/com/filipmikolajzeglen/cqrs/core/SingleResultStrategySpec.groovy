@@ -2,9 +2,9 @@ package com.filipmikolajzeglen.cqrs.core
 
 import spock.lang.Specification
 
-class SinglePaginationSpec extends Specification {
+class SingleResultStrategySpec extends Specification {
 
-   def pagination = Pagination.single()
+   def pagination = ResultStrategy.single()
 
    def "expandSingle returns the same element"() {
       expect:
@@ -42,12 +42,12 @@ class SinglePaginationSpec extends Specification {
 
    def "getType returns SINGLE"() {
       expect:
-      pagination.getType() == PaginationType.SINGLE
+      pagination.getType() == ResultStrategyType.SINGLE
    }
 
    def "accept calls visitor.visitSingle"() {
       given:
-      def visitor = Mock(PaginationVisitor)
+      def visitor = Mock(ResultStrategyVisitor)
       def value = "X"
 
       when:

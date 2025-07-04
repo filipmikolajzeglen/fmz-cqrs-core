@@ -27,13 +27,13 @@ public class AutonomousCommandContext
     * Performs a query with pagination using the dispatcher.
     *
     * @param query the query to perform
-    * @param pagination the pagination strategy
+    * @param resultStrategy the pagination strategy
     * @param <TYPE> the element type
-    * @param <PAGE> the paginated result type
+    * @param <RESULT> the result type
     * @return the paginated result
     */
-   public  <TYPE, PAGE> PAGE perform(Query<TYPE> query, Pagination<TYPE, PAGE> pagination)
+   public  <TYPE, RESULT> RESULT perform(Query<TYPE> query, ResultStrategy<TYPE, RESULT> resultStrategy)
    {
-      return dispatcher.perform(query, pagination);
+      return dispatcher.perform(query, resultStrategy);
    }
 }

@@ -2,10 +2,10 @@ package com.filipmikolajzeglen.cqrs.core
 
 import spock.lang.Specification
 
-class PagedPaginationSpec extends Specification {
+class PagedResultStrategySpec extends Specification {
 
    def elements = (1..7).collect { "Item-$it" }
-   def pagination = Pagination.paged(1, 3, 7)
+   def pagination = ResultStrategy.paged(1, 3, 7)
 
    def "expand returns correct page content"() {
       expect:
@@ -29,7 +29,7 @@ class PagedPaginationSpec extends Specification {
 
    def "expandSingle with page = 0 wraps element in first page"() {
       given:
-      def pagination = new PagedPagination<String>(0, 5, 1)
+      def pagination = new PagedResultStrategy<String>(0, 5, 1)
 
       when:
       def result = pagination.expandSingle("Only")
@@ -46,7 +46,7 @@ class PagedPaginationSpec extends Specification {
 
    def "expandSingle throws when page > 0"() {
       given:
-      def pagination = new PagedPagination<String>(1, 5, 1)
+      def pagination = new PagedResultStrategy<String>(1, 5, 1)
 
       when:
       pagination.expandSingle("Only")
@@ -58,7 +58,7 @@ class PagedPaginationSpec extends Specification {
 
    def "expand with single element and page > 0 returns empty page"() {
       given:
-      def pagination = new PagedPagination<String>(1, 5, 1)
+      def pagination = new PagedResultStrategy<String>(1, 5, 1)
 
       when:
       def result = pagination.expand(["Only"])
@@ -75,14 +75,14 @@ class PagedPaginationSpec extends Specification {
 
    def "getType returns PAGED"() {
       expect:
-      pagination.getType() == PaginationType.PAGED
+      pagination.getType() == ResultStrategyType.PAGED
       pagination.page == 1
       pagination.size == 3
    }
 
    def "accept calls visitor.visitPaged"() {
       given:
-      def visitor = Mock(PaginationVisitor)
+      def visitor = Mock(ResultStrategyVisitor)
       def pagedResult = pagination.expand(elements)
 
       when:
@@ -92,17 +92,17 @@ class PagedPaginationSpec extends Specification {
       1 * visitor.visitPaged(pagination, pagedResult)
    }
 
-   def "orderedByAsc and orderedByDesc add sorts"() {
+   def "orderedByAsc and orderedByDesc add Orders"() {
       given:
-      def pagination = Pagination.paged(0, 5, 10)
+      def pagination = ResultStrategy.paged(0, 5, 10)
             .orderedByAsc("foo")
             .orderedByDesc("bar")
 
       expect:
-      pagination.getSorts().size() == 2
-      pagination.getSorts()[0].property == "foo"
-      pagination.getSorts()[0].direction == Sort.Direction.ASC
-      pagination.getSorts()[1].property == "bar"
-      pagination.getSorts()[1].direction == Sort.Direction.DESC
+      pagination.getOrders().size() == 2
+      pagination.getOrders()[0].property == "foo"
+      pagination.getOrders()[0].direction == Order.Direction.ASC
+      pagination.getOrders()[1].property == "bar"
+      pagination.getOrders()[1].direction == Order.Direction.DESC
    }
 }

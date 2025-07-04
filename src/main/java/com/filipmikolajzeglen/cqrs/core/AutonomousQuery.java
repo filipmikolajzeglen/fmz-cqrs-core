@@ -10,12 +10,12 @@ package com.filipmikolajzeglen.cqrs.core;
 public abstract class AutonomousQuery<TYPE> extends Query<TYPE>
 {
    /**
-    * Performs the query using the given context and pagination.
+    * Performs the query using the given context and result strategy.
     *
     * @param context the autonomous query context
-    * @param pagination the pagination strategy
-    * @param <PAGE> the paginated result type
-    * @return the paginated result
+    * @param resultStrategy the result strategy
+    * @param <RESULT> the result type
+    * @return the result
     */
-   protected abstract <PAGE> PAGE perform(AutonomousQueryContext context, Pagination<TYPE, PAGE> pagination);
+   protected abstract <RESULT> RESULT perform(AutonomousQueryContext context, ResultStrategy<TYPE, RESULT> resultStrategy);
 }

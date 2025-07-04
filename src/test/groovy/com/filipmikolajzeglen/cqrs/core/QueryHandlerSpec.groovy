@@ -11,7 +11,7 @@ class QueryHandlerSpec extends Specification {
       def handler = new DummyEntityQueryHandler()
 
       when:
-      def result = handler.handle(query, Pagination.single())
+      def result = handler.handle(query, ResultStrategy.single())
 
       then:
       result != null
@@ -30,7 +30,7 @@ class QueryHandlerSpec extends Specification {
       def handler = new DummyEntityQueryHandler()
 
       when:
-      handler.handle(query, Pagination.single())
+      handler.handle(query, ResultStrategy.single())
 
       then:
       thrown(NoSuchElementException)

@@ -2,9 +2,9 @@ package com.filipmikolajzeglen.cqrs.core
 
 import spock.lang.Specification
 
-class ListPaginationSpec extends Specification {
+class ListResultStrategySpec extends Specification {
 
-   def pagination = Pagination.all()
+   def pagination = ResultStrategy.all()
 
    def "expandSingle wraps element in list"() {
       expect:
@@ -28,12 +28,12 @@ class ListPaginationSpec extends Specification {
 
    def "getType returns LIST"() {
       expect:
-      pagination.getType() == PaginationType.LIST
+      pagination.getType() == ResultStrategyType.LIST
    }
 
    def "accept calls visitor.visitList"() {
       given:
-      def visitor = Mock(PaginationVisitor)
+      def visitor = Mock(ResultStrategyVisitor)
       def value = ["A", "B"]
 
       when:
@@ -43,17 +43,17 @@ class ListPaginationSpec extends Specification {
       1 * visitor.visitList(pagination, value)
    }
 
-   def "orderedByAsc and orderedByDesc add sorts"() {
+   def "orderedByAsc and orderedByDesc add Orders"() {
       given:
-      def pagination = Pagination.all()
+      def pagination = ResultStrategy.all()
             .orderedByAsc("foo")
             .orderedByDesc("bar")
 
       expect:
-      pagination.getSorts().size() == 2
-      pagination.getSorts()[0].property == "foo"
-      pagination.getSorts()[0].direction == Sort.Direction.ASC
-      pagination.getSorts()[1].property == "bar"
-      pagination.getSorts()[1].direction == Sort.Direction.DESC
+      pagination.getOrders().size() == 2
+      pagination.getOrders()[0].property == "foo"
+      pagination.getOrders()[0].direction == Order.Direction.ASC
+      pagination.getOrders()[1].property == "bar"
+      pagination.getOrders()[1].direction == Order.Direction.DESC
    }
 }

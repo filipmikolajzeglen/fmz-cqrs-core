@@ -16,14 +16,14 @@ public interface Dispatcher
    <COMMAND extends Command<? extends TYPE>, TYPE> TYPE execute(COMMAND command);
 
    /**
-    * Performs the given query with the specified pagination and returns the result.
+    * Performs the given query with the specified result strategy and returns the result.
     *
     * @param query the query to perform
-    * @param pagination the pagination strategy
+    * @param resultStrategy the result strategy
     * @param <QUERY> the query type
     * @param <TYPE> the element type
-    * @param <PAGE> the paginated result type
-    * @return the paginated result
+    * @param <RESULT> the result type
+    * @return the result
     */
-   <QUERY extends Query<? extends TYPE>, TYPE, PAGE> PAGE perform(QUERY query, Pagination<TYPE, PAGE> pagination);
+   <QUERY extends Query<? extends TYPE>, TYPE, RESULT> RESULT perform(QUERY query, ResultStrategy<TYPE, RESULT> resultStrategy);
 }

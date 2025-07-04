@@ -6,5 +6,5 @@ package com.filipmikolajzeglen.cqrs.core;
  */
 public interface QueryInterceptor
 {
-   <TYPE, PAGE> PAGE intercept(Query<TYPE> query, Pagination<TYPE, PAGE> pagination, QueryInvocation<TYPE, PAGE> next);
+   <TYPE, RESULT> RESULT intercept(Query<TYPE> query, ResultStrategy<TYPE, RESULT> resultStrategy, QueryInvocation<TYPE, RESULT> next);
 }
