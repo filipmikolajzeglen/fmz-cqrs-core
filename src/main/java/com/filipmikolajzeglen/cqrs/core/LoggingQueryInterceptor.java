@@ -13,8 +13,6 @@ public class LoggingQueryInterceptor implements QueryInterceptor
          QueryInvocation<TYPE, RESULT> next)
    {
       log.info("Performing query '{}' with result strategy type '{}'", query.getClass(), resultStrategy.getType());
-      RESULT result = next.invoke(resultStrategy);
-      log.info("Query result '{}'", result.getClass());
-      return result;
+      return next.invoke(resultStrategy);
    }
 }

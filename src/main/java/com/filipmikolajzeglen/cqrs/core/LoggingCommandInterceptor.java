@@ -12,8 +12,6 @@ public class LoggingCommandInterceptor implements CommandInterceptor
    public <TYPE> TYPE intercept(Command<TYPE> command, CommandInvocation<TYPE> next)
    {
       log.info("Executing command '{}'", command.getClass());
-      TYPE result = next.invoke();
-      log.info("Command result '{}'", result.getClass());
-      return result;
+      return next.invoke();
    }
 }

@@ -19,9 +19,6 @@ class DispatcherDecoratorSpec extends Specification {
       logCaptor.infoLogs.any {
          it.contains("Executing command 'class com.filipmikolajzeglen.cqrs.core.DummyEntityCreateCommand'")
       }
-      logCaptor.infoLogs.any {
-         it.contains("Command result 'class com.filipmikolajzeglen.cqrs.core.DummyEntity'")
-      }
    }
 
    def "should log execution of query"() {
@@ -37,9 +34,6 @@ class DispatcherDecoratorSpec extends Specification {
       then:
       logCaptor.infoLogs.any {
          it.contains("Performing query 'class com.filipmikolajzeglen.cqrs.core.DummyEntityQuery'")
-      }
-      logCaptor.infoLogs.any {
-         it.contains("Query result 'class com.filipmikolajzeglen.cqrs.core.DummyEntity'")
       }
    }
 

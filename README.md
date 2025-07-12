@@ -18,7 +18,7 @@ Add the following dependency to your Maven or Gradle project.
 <dependency>
    <groupId>com.filipmikolajzeglen.cqrs</groupId>
    <artifactId>fmz-cqrs-core</artifactId>
-   <version>2.0.3</version>
+   <version>2.0.4</version>
 </dependency>
 ```
 
